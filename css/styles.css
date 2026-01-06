@@ -169,6 +169,8 @@ header {
     border: 1px solid #e5e7eb;
     cursor: pointer;
     transition: all 0.3s;
+    display: block;
+    text-decoration: none;
 }
 
 .category-card:hover {
@@ -326,4 +328,34 @@ header {
 .icon-lg {
     width: 24px;
     height: 24px;
+}
+
+/* Generic container for inner pages */
+.container {
+    max-width: 960px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.breadcrumb a {
+    color: #4f46e5;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-sep {
+    color: #9ca3af;
 }

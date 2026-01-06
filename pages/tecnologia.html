@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tecnología - Wiki IA</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body>
+  <header>
+      <div class="header-content">
+          <div class="header-left">
+              <div class="logo">Wiki IA</div>
+              <div class="search-container">
+                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                  <input type="text" class="search-input" placeholder="Buscar una IA">
+              </div>
+          </div>
+          <div class="header-buttons">
+              <button class="btn btn-secondary">Iniciar sesión</button>
+              <button class="btn btn-primary">Registrarse</button>
+          </div>
+      </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="../index.html">Inicio</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Tecnología</span>
+      </nav>
+      <h1 class="title">Tecnología</h1>
+      <p>Contenido de la categoría Tecnología (placeholder).</p>
+      <a href="../index.html" class="btn btn-primary" style="display:inline-block;margin-top:1rem;">← Volver al inicio</a>
+    </div>
+  </main>
+  
+    <!-- Chatbot Button -->
+    <button class="chatbot-button" id="chatbotBtn">
+      <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+      </svg>
+    </button>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header">
+        <div class="chatbot-header-left">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+          <span style="font-weight: 600;">Asistente IA</span>
+        </div>
+        <button class="chatbot-close" id="chatbotClose">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="chatbot-body" id="chatbotBody">
+        <div class="chat-message">
+          <p>¡Hola! ¿En qué puedo ayudarte hoy?</p>
+        </div>
+      </div>
+      <div class="chatbot-footer">
+        <div class="chat-input-container">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
+          <button class="chat-send" id="chatSend">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>
