@@ -131,6 +131,16 @@ header {
     font-size: 0.95rem;
 }
 
+.nav-item-highlight {
+    background: #ede9fe !important;
+    color: #4f46e5 !important;
+    font-weight: 600;
+}
+
+.nav-item-highlight:hover {
+    background: #ddd6fe !important;
+}
+
 .nav-item:hover {
     background: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -139,6 +149,76 @@ header {
 .nav-icon {
     width: 20px;
     height: 20px;
+}
+
+/* Sidebar Derecho */
+.sidebar-right {
+    width: 200px;
+    padding: 1.5rem;
+}
+
+.categories-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.875rem;
+    font-weight: 600;
+    gap: 0.5rem;
+}
+
+.categories-toggle:hover {
+    background: #f9fafb;
+    border-color: #4f46e5;
+}
+
+.chevron {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.3s;
+}
+
+.categories-toggle.active .chevron {
+    transform: rotate(180deg);
+}
+
+.categories-list {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.categories-list.active {
+    display: flex;
+    max-height: 500px;
+}
+
+.category-link {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    color: #374151;
+    text-decoration: none;
+    transition: all 0.15s;
+    font-size: 0.875rem;
+}
+
+.category-link:hover {
+    background: #f3f4f6;
+    border-color: #4f46e5;
+    color: #4f46e5;
 }
 
 /* Main Content */
@@ -358,4 +438,164 @@ header {
 
 .breadcrumb-sep {
     color: #9ca3af;
+}
+
+/* Filtros - CORREGIR TAMAÑO */
+.filters-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.filter-btn:hover {
+    border-color: #4f46e5;
+    color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.filter-btn.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: white;
+}
+
+/* ⭐ ESTO ES LO IMPORTANTE - Controlar el tamaño del icono */
+.filter-icon {
+    width: 1.25rem;  /* 20px */
+    height: 1.25rem; /* 20px */
+    flex-shrink: 0; /* No permitir que se encoja */
+}
+
+/* Grid de IAs - CORREGIR */
+.ai-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Tarjeta de IA */
+.ai-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.ai-card:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    border-color: #4f46e5;
+}
+
+.ai-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* ⭐ Logo placeholder - TAMAÑO CORRECTO */
+.ai-logo-placeholder {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.ai-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #fbbf24;
+    font-weight: 600;
+}
+
+/* ⭐ Estrella - TAMAÑO CORRECTO */
+.star-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.ai-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.ai-description {
+    color: #6b7280;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.ai-meta {
+    margin-bottom: 0.75rem;
+}
+
+.ai-category {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #ede9fe;
+    color: #4f46e5;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.ai-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.ai-link-btn {
+    display: block;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    background: #4f46e5;
+    color: white;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.ai-link-btn:hover {
+    background: #4338ca;
 }
