@@ -225,6 +225,32 @@
                     <a href="https://claude.ai" target="_blank" class="ai-link-btn">Visitar IA</a>
                 </div>
             </div>
+            
+            <!-- ⭐ PAGINACIÓN (fuera del grid) -->
+            <div class="pagination-container" id="paginationContainer">
+                <button class="pagination-btn" id="btnPrevious">
+                    <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Anterior
+                </button>
+                
+                <div class="pagination-numbers" id="paginationNumbers">
+                    <!-- Los números se generan con JS -->
+                </div>
+                
+                <button class="pagination-btn" id="btnNext">
+                    Siguiente
+                    <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Información de resultados -->
+            <div class="pagination-info" id="paginationInfo">
+                Mostrando 1-12 de 156 IAs
+            </div>
         </main>
 
         <!-- Sidebar Derecho - CATEGORÍAS -->
