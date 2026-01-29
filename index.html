@@ -40,12 +40,6 @@
         <!-- Sidebar Izquierdo -->
         <aside class="sidebar">
             <nav>
-                <a href="index.html" class="nav-item">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
-                    <span>Inicio</span>
-                </a>
                 <a href="pages/favoritos.html" class="nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -58,12 +52,12 @@
                     </svg>
                     <span>Perfil</span>
                 </a>
-                <a href="pages/publicar.html" class="nav-item nav-item-highlight">
-                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="btn btn-primary" onclick="abrirModalPublicarIA()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    <span>Publicar IA</span>
-                </a>
+                    Publicar IA
+                </button>
             </nav>
         </aside>
 
@@ -264,6 +258,100 @@
             </div>
         </div>
     </div>
+    <!-- ============================================= -->
+<!-- MODAL PUBLICAR IA - Agregar antes del </body> -->
+<!-- ============================================= -->
+
+<!-- Modal de Publicar IA -->
+<div class="modal-overlay" id="publicarIAModal">
+    <div class="modal-container modal-lg">
+        <div class="modal-header">
+            <h2>Publicar Nueva IA</h2>
+            <button class="modal-close-btn" onclick="cerrarModal('publicarIAModal')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Mensaje si no está logueado -->
+            <div class="auth-required-message" id="authRequiredMessage">
+                <div class="auth-required-icon">🔒</div>
+                <h3>Inicia sesión para publicar</h3>
+                <p>Necesitas una cuenta para publicar nuevas IAs y ganar puntos.</p>
+                <div class="auth-required-buttons">
+                    <button class="btn btn-primary" onclick="cambiarModal('publicarIAModal', 'loginModal')">Iniciar Sesión</button>
+                    <button class="btn btn-secondary" onclick="cambiarModal('publicarIAModal', 'registroModal')">Crear Cuenta</button>
+                </div>
+            </div>
+
+            <!-- Formulario de publicación (solo visible si está logueado) -->
+            <form id="publicarIAForm" onsubmit="handlePublicarIA(event)" style="display: none;">
+                <div class="form-group">
+                    <label for="iaNombre">Nombre de la IA *</label>
+                    <input type="text" id="iaNombre" name="nombre" placeholder="Ej: ChatGPT, Midjourney, etc." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="iaCategoria">Categoría *</label>
+                    <select id="iaCategoria" name="categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        <!-- Se llena dinámicamente con JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="iaUrl">URL de la IA *</label>
+                    <input type="url" id="iaUrl" name="url" placeholder="https://ejemplo.com" required>
+                    <span class="form-hint">Enlace directo a la herramienta de IA</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="iaDescripcion">Descripción *</label>
+                    <textarea id="iaDescripcion" name="descripcion" rows="4" placeholder="Describe qué hace esta IA, para qué sirve y por qué la recomiendas..." required minlength="50"></textarea>
+                    <span class="form-hint">Mínimo 50 caracteres</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="iaImagen">URL de imagen/logo (opcional)</label>
+                    <input type="url" id="iaImagen" name="imagen" placeholder="https://ejemplo.com/logo.png">
+                    <span class="form-hint">Enlace a una imagen del logo de la IA</span>
+                </div>
+
+                <div class="form-info">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Tu publicación será revisada por un administrador antes de aparecer en el catálogo. Recibirás <strong>50 puntos</strong> cuando sea aprobada.</span>
+                </div>
+
+                <div class="form-error" id="publicarIAError"></div>
+
+                <button type="submit" class="btn btn-primary btn-full" id="publicarIABtn">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Enviar para Revisión
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ============================================= -->
+<!-- BOTÓN PUBLICAR IA - Agregar donde quieras    -->
+<!-- (puede ser en el sidebar o en el header)     -->
+<!-- ============================================= -->
+<!--
+<button class="btn btn-primary" onclick="abrirModalPublicarIA()">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    Publicar IA
+</button>
+-->
+
 
     <script src="js/script.js"></script>
     <script src="js/auth.js"></script>
