@@ -291,3 +291,110 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verificar estado de sesión al cargar la página
     actualizarHeaderUsuario();
 });
+
+// =============================================
+// PUBLICAR IA - Agregar esto al final de auth.js
+// =============================================
+
+// Abrir modal de publicar IA
+function abrirModalPublicarIA() {
+    const modal = document.getElementById('publicarIAModal');
+    const authMessage = document.getElementById('authRequiredMessage');
+    const form = document.getElementById('publicarIAForm');
+    
+    if (estaAutenticado()) {
+        // Usuario logueado - mostrar formulario
+        authMessage.style.display = 'none';
+        form.style.display = 'block';
+        cargarCategoriasSelect();
+    } else {
+        // Usuario no logueado - mostrar mensaje
+        authMessage.style.display = 'block';
+        form.style.display = 'none';
+    }
+    
+    abrirModal('publicarIAModal');
+}
+
+// Cargar categorías en el select
+async function cargarCategoriasSelect() {
+    const select = document.getElementById('iaCategoria');
+    
+    // Evitar cargar si ya tiene opciones
+    if (select.options.length > 1) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/categorias`);
+        const categorias = await response.json();
+        
+        categorias.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.categoria_id;
+            option.textContent = `${cat.icono} ${cat.nombre}`;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar categorías:', error);
+    }
+}
+
+// Manejar publicación de IA
+async function handlePublicarIA(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const btn = document.getElementById('publicarIABtn');
+    const errorDiv = document.getElementById('publicarIAError');
+    
+    const nombre = document.getElementById('iaNombre').value.trim();
+    const categoria_id = document.getElementById('iaCategoria').value;
+    const url = document.getElementById('iaUrl').value.trim();
+    const descripcion = document.getElementById('iaDescripcion').value.trim();
+    const imagen_logo = document.getElementById('iaImagen').value.trim();
+    
+    // Validaciones
+    if (descripcion.length < 50) {
+        errorDiv.textContent = 'La descripción debe tener al menos 50 caracteres';
+        errorDiv.classList.add('active');
+        return;
+    }
+    
+    // Mostrar loading
+    btn.classList.add('btn-loading');
+    btn.disabled = true;
+    errorDiv.classList.remove('active');
+    
+    try {
+        const response = await fetch(`${API_URL}/ias`, {
+            method: 'POST',
+            headers: obtenerHeaders(),
+            body: JSON.stringify({
+                nombre,
+                categoria_id: parseInt(categoria_id),
+                url,
+                descripcion,
+                imagen_logo: imagen_logo || null
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Error al publicar IA');
+        }
+        
+        // Cerrar modal y limpiar formulario
+        cerrarModal('publicarIAModal');
+        form.reset();
+        
+        // Mostrar mensaje de éxito
+        mostrarNotificacion('¡IA enviada para revisión! Recibirás 50 puntos cuando sea aprobada.', 'success');
+        
+    } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.add('active');
+    } finally {
+        btn.classList.remove('btn-loading');
+        btn.disabled = false;
+    }
+}
