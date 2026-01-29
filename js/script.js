@@ -109,6 +109,7 @@ class Pagination {
         this.currentPage = 1;
         this.totalItems = 0;
         this.currentFilter = 'most-used';
+        this.isInitialLoad = true; // Bandera para evitar scroll en carga inicial
         
         // Elementos del DOM
         this.aiGrid = document.getElementById('aiGrid');
@@ -197,14 +198,6 @@ class Pagination {
         
         // Actualizar controles de paginación
         this.updatePaginationControls();
-        
-        // Scroll al inicio del contenido
-        if (this.aiGrid) {
-            window.scrollTo({
-                top: this.aiGrid.offsetTop - 100,
-                behavior: 'smooth'
-            });
-        }
     }
     
     renderAIs(ais) {
