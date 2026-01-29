@@ -100,68 +100,8 @@ if (categoriesToggle) {
 }
 
 // =============================================================================
-// FILTROS DE IAs - Con cambio de título
-// =============================================================================
-
-const filterBtns = document.querySelectorAll('.filter-btn');
-const aiGrid = document.getElementById('aiGrid');
-const mainTitle = document.getElementById('mainTitle');
-
-if (filterBtns.length > 0 && aiGrid) {
-    // Títulos para cada filtro
-    const filterTitles = {
-        'latest': 'Últimas IAs Publicadas',
-        'top-rated': 'IAs Mejor Calificadas',
-        'most-used': 'IAs Más Usadas'
-    };
-
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Quitar 'active' de todos los botones
-            filterBtns.forEach(b => b.classList.remove('active'));
-            
-            // Agregar 'active' al botón clickeado
-            btn.classList.add('active');
-            
-            // Obtener el filtro seleccionado
-            const filter = btn.getAttribute('data-filter');
-            
-            // Cambiar el título principal
-            if (mainTitle) {
-                mainTitle.textContent = filterTitles[filter];
-            }
-            
-            // Obtener todas las tarjetas de IA
-            const cards = Array.from(aiGrid.querySelectorAll('.ai-card'));
-            
-            // Ordenar tarjetas según el filtro
-            cards.sort((a, b) => {
-                if (filter === 'latest') {
-                    return new Date(b.dataset.date) - new Date(a.dataset.date);
-                } else if (filter === 'top-rated') {
-                    return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-                } else if (filter === 'most-used') {
-                    return parseInt(b.dataset.uses) - parseInt(a.dataset.uses);
-                }
-            });
-            
-            // Limpiar y volver a agregar las tarjetas ordenadas
-            aiGrid.innerHTML = '';
-            cards.forEach(card => aiGrid.appendChild(card));
-            
-            console.log('Filtro aplicado:', filter);
-        });
-    });
-
-    // Aplicar filtro "Más Usadas" por defecto al cargar la página
-    const mostUsedBtn = document.querySelector('[data-filter="most-used"]');
-    if (mostUsedBtn) {
-        mostUsedBtn.click();
-    }
-}
-// ===================================
 // SISTEMA DE PAGINACIÓN
-// ===================================
+// =============================================================================
 
 class Pagination {
     constructor(itemsPerPage = 12) {
@@ -406,9 +346,9 @@ class Pagination {
     }
 }
 
-// ===================================
-// INICIALIZAR PAGINACIÓN
-// ===================================
+// =============================================================================
+// INICIALIZACIÓN
+// =============================================================================
 
 let pagination;
 

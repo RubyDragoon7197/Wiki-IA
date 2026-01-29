@@ -19,9 +19,18 @@
                     <input type="text" class="search-input" placeholder="Buscar una IA">
                 </div>
             </div>
-            <div class="header-buttons">
-                <button class="btn btn-secondary">Iniciar sesión</button>
-                <button class="btn btn-primary">Registrarse</button>
+            
+            <!-- Botones cuando NO está logueado -->
+            <div class="header-buttons" id="headerButtons">
+                <button class="btn btn-secondary" onclick="abrirModal('loginModal')">Iniciar sesión</button>
+                <button class="btn btn-primary" onclick="abrirModal('registroModal')">Registrarse</button>
+            </div>
+            
+            <!-- Botones cuando SÍ está logueado -->
+            <div class="header-buttons header-user" id="headerUser" style="display: none;">
+                <span class="user-welcome">Hola, <strong id="userName">Usuario</strong></span>
+                <span class="user-points" id="userPoints">0 pts</span>
+                <button class="btn btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
             </div>
         </div>
     </header>
@@ -54,7 +63,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     <span>Publicar IA</span>
-                </a>                
+                </a>
             </nav>
         </aside>
 
@@ -85,148 +94,12 @@
                 </button>
             </div>
             
-            <!-- Grid de IAs -->
+            <!-- Grid de IAs (se genera dinámicamente) -->
             <div class="ai-grid" id="aiGrid">
-                <!-- Tarjeta de IA 1 -->
-                <div class="ai-card" data-date="2024-01-15" data-rating="4.9" data-uses="25000" data-category="programacion">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">🤖</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.9</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">ChatGPT</h3>
-                    <p class="ai-description">Asistente de IA conversacional para múltiples tareas</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Programación</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 25K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://chat.openai.com" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
-
-                <!-- Tarjeta de IA 2 -->
-                <div class="ai-card" data-date="2024-01-12" data-rating="4.7" data-uses="18000" data-category="diseno">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">🎨</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.7</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">Midjourney</h3>
-                    <p class="ai-description">Generador de imágenes artísticas con IA</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Diseño</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 18K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://midjourney.com" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
-
-                <!-- Tarjeta de IA 3 -->
-                <div class="ai-card" data-date="2024-01-18" data-rating="4.8" data-uses="15000" data-category="programacion">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">💻</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.8</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">GitHub Copilot</h3>
-                    <p class="ai-description">Asistente de programación con IA</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Programación</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 15K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://github.com/features/copilot" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
-
-                <!-- Tarjeta de IA 4 -->
-                <div class="ai-card" data-date="2024-01-08" data-rating="4.6" data-uses="12000" data-category="educacion">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">📚</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.6</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">Perplexity AI</h3>
-                    <p class="ai-description">Motor de búsqueda conversacional con IA</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Educación</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 12K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://perplexity.ai" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
-
-                <!-- Tarjeta de IA 5 -->
-                <div class="ai-card" data-date="2024-01-05" data-rating="4.5" data-uses="10000" data-category="diseno">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">🖼️</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.5</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">DALL-E 3</h3>
-                    <p class="ai-description">Generador avanzado de imágenes con IA</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Diseño</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 10K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://openai.com/dall-e-3" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
-
-                <!-- Tarjeta de IA 6 -->
-                <div class="ai-card" data-date="2024-01-20" data-rating="4.4" data-uses="8000" data-category="tecnologia">
-                    <div class="ai-card-header">
-                        <div class="ai-logo-placeholder">⚡</div>
-                        <div class="ai-rating">
-                            <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                            </svg>
-                            <span>4.4</span>
-                        </div>
-                    </div>
-                    <h3 class="ai-name">Claude</h3>
-                    <p class="ai-description">Asistente de IA para conversaciones y tareas complejas</p>
-                    <div class="ai-meta">
-                        <span class="ai-category">Tecnología</span>
-                    </div>
-                    <div class="ai-stats">
-                        <span>👁️ 8K usos</span>
-                        <span>📅 Ene 2024</span>
-                    </div>
-                    <a href="https://claude.ai" target="_blank" class="ai-link-btn">Visitar IA</a>
-                </div>
+                <!-- Las tarjetas se generan con JavaScript -->
             </div>
             
-            <!-- ⭐ PAGINACIÓN (fuera del grid) -->
+            <!-- Paginación -->
             <div class="pagination-container" id="paginationContainer">
                 <button class="pagination-btn" id="btnPrevious">
                     <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,7 +122,7 @@
             
             <!-- Información de resultados -->
             <div class="pagination-info" id="paginationInfo">
-                Mostrando 1-12 de 156 IAs
+                Mostrando 1-12 de 50 IAs
             </div>
         </main>
 
@@ -318,6 +191,81 @@
         </div>
     </div>
 
+    <!-- Modal de Iniciar Sesión -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Iniciar Sesión</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('loginModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Correo electrónico</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                        Iniciar Sesión
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿No tienes cuenta? <a href="#" onclick="cambiarModal('loginModal', 'registroModal')">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal-overlay" id="registroModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Crear Cuenta</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('registroModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="registroForm" onsubmit="handleRegistro(event)">
+                    <div class="form-group">
+                        <label for="registroUsername">Nombre de usuario</label>
+                        <input type="text" id="registroUsername" name="username" placeholder="usuario123" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroEmail">Correo electrónico</label>
+                        <input type="email" id="registroEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPassword">Contraseña</label>
+                        <input type="password" id="registroPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPasswordConfirm">Confirmar contraseña</label>
+                        <input type="password" id="registroPasswordConfirm" name="passwordConfirm" placeholder="Repite tu contraseña" required>
+                    </div>
+                    <div class="form-error" id="registroError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="registroBtn">
+                        Crear Cuenta
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿Ya tienes cuenta? <a href="#" onclick="cambiarModal('registroModal', 'loginModal')">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
