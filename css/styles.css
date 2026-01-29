@@ -167,6 +167,10 @@ header {
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.95rem;
+    text-decoration: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
 }
 
 .nav-item-highlight {

@@ -296,6 +296,47 @@ document.addEventListener('DOMContentLoaded', () => {
 // PUBLICAR IA - Agregar esto al final de auth.js
 // =============================================
 
+// NAVEGACI\u00d3N CON AUTENTICACI\u00d3N - Verificar antes de navegar
+// =============================================
+function navegarConAuth(url, seccion) {
+    if (estaAutenticado()) {
+        // Usuario logueado - navegar normalmente
+        window.location.href = url;
+    } else {
+        // Usuario no logueado - mostrar modal de autenticaci\u00f3n
+        mostrarModalAuthRequerida(seccion);
+    }
+}
+
+// Mostrar modal gen\u00e9rico de autenticaci\u00f3n requerida
+function mostrarModalAuthRequerida(seccion) {
+    const modal = document.getElementById('authRequiredModal');
+    const title = document.getElementById('authModalTitle');
+    const message = document.getElementById('authModalMessage');
+    
+    // Personalizar mensaje seg\u00fan la secci\u00f3n
+    const mensajes = {
+        'Favoritos': {
+            titulo: 'Accede a tus Favoritos',
+            mensaje: 'Necesitas una cuenta para guardar y ver tus IAs favoritas.'
+        },
+        'Perfil': {
+            titulo: 'Accede a tu Perfil',
+            mensaje: 'Necesitas una cuenta para ver tu perfil, puntos y medallas.'
+        }
+    };
+    
+    const info = mensajes[seccion] || {
+        titulo: 'Autenticaci\u00f3n Requerida',
+        mensaje: 'Necesitas una cuenta para acceder a esta secci\u00f3n.'
+    };
+    
+    title.textContent = info.titulo;
+    message.textContent = info.mensaje;
+    
+    abrirModal('authRequiredModal');
+}
+
 // Abrir modal de publicar IA
 function abrirModalPublicarIA() {
     const modal = document.getElementById('publicarIAModal');
