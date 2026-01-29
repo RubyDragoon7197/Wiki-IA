@@ -40,18 +40,18 @@
         <!-- Sidebar Izquierdo -->
         <aside class="sidebar">
             <nav>
-                <a href="pages/favoritos.html" class="nav-item">
+                <button class="nav-item" onclick="navegarConAuth('pages/favoritos.html', 'Favoritos')">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>
                     <span>Favoritos</span>
-                </a>
-                <a href="pages/perfil.html" class="nav-item">
+                </button>
+                <button class="nav-item" onclick="navegarConAuth('pages/perfil.html', 'Perfil')">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                     <span>Perfil</span>
-                </a>
+                </button>
                 <button class="btn btn-primary" onclick="abrirModalPublicarIA()">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -259,6 +259,32 @@
         </div>
     </div>
     <!-- ============================================= -->
+<!-- MODAL DE AUTENTICACIÓN REQUERIDA GENÉRICO -->
+<!-- ============================================= -->
+<div class="modal-overlay" id="authRequiredModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 id="authModalTitle">Autenticación Requerida</h2>
+            <button class="modal-close-btn" onclick="cerrarModal('authRequiredModal')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="auth-required-message">
+                <div class="auth-required-icon">🔒</div>
+                <h3>Inicia sesión para continuar</h3>
+                <p id="authModalMessage">Necesitas una cuenta para acceder a esta sección.</p>
+                <div class="auth-required-buttons">
+                    <button class="btn btn-primary" onclick="cambiarModal('authRequiredModal', 'loginModal')">Iniciar Sesión</button>
+                    <button class="btn btn-secondary" onclick="cambiarModal('authRequiredModal', 'registroModal')">Crear Cuenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL PUBLICAR IA - Agregar antes del </body> -->
 <!-- ============================================= -->
 
