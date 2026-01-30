@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - Admin</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Header Admin -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-header-left">
+                <div class="logo">Wiki IA <span class="admin-badge">ADMIN</span></div>
+            </div>
+            <div class="admin-header-right">
+                <span class="admin-user">👤 <span id="adminName">admin</span></span>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">Ver Sitio</button>
+                <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                
+                <a href="pendientes.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    IAs Pendientes
+                    <span class="badge badge-warning" id="pendingCount">0</span>
+                </a>
+                
+                <a href="ias.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Todas las IAs
+                </a>
+                
+                <a href="usuarios.html" class="admin-nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    Usuarios
+                </a>
+                
+                <a href="categorias.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                    Categorías
+                </a>
+                
+                <a href="historial.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Historial
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="admin-main">
+            <div class="admin-header-section">
+                <h1 class="admin-title">Usuarios</h1>
+                <div class="admin-actions">
+                    <select id="filtroRol" class="form-select" onchange="filtrarUsuarios()">
+                        <option value="">Todos los roles</option>
+                        <option value="admin">Administradores</option>
+                        <option value="user">Usuarios</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="cargarUsuarios()">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-row">
+                <div class="stat-mini">
+                    <span class="stat-mini-num" id="totalUsuarios">0</span>
+                    <span class="stat-mini-label">Total</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-num" id="totalAdmins">0</span>
+                    <span class="stat-mini-label">Admins</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-mini-num" id="totalBaneados">0</span>
+                    <span class="stat-mini-label">Baneados</span>
+                </div>
+            </div>
+
+            <!-- Tabla de Usuarios -->
+            <div class="admin-card">
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Puntos</th>
+                                <th>Nivel</th>
+                                <th>Registro</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuariosTableBody">
+                            <tr>
+                                <td colspan="8" class="loading-cell">Cargando usuarios...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Banear -->
+    <div class="modal" id="banModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Banear Usuario</h2>
+                <button class="modal-close" onclick="closeBanModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Por qué razón baneas a <strong id="banUsername"></strong>?</p>
+                <textarea id="banReason" class="form-textarea" rows="3" placeholder="Razón del baneo..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBanModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmBan()">Banear Usuario</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+    <script>
+        // Variables
+        let todosLosUsuarios = [];
+        let usuarioABanear = null;
+
+        // Cargar usuarios
+        async function cargarUsuarios() {
+            const tbody = document.getElementById('usuariosTableBody');
+            tbody.innerHTML = '<tr><td colspan="8" class="loading-cell">Cargando usuarios...</td></tr>';
+
+            try {
+                const response = await fetch(`${API_URL}/admin/usuarios`, {
+                    headers: obtenerHeaders()
+                });
+
+                if (!response.ok) throw new Error('Error al cargar usuarios');
+
+                todosLosUsuarios = await response.json();
+                actualizarContadores();
+                renderizarTabla(todosLosUsuarios);
+
+            } catch (error) {
+                console.error('Error:', error);
+                tbody.innerHTML = '<tr><td colspan="8" class="error-cell">Error al cargar usuarios</td></tr>';
+            }
+        }
+
+        // Actualizar contadores
+        function actualizarContadores() {
+            const total = todosLosUsuarios.length;
+            const admins = todosLosUsuarios.filter(u => u.rol === 'admin').length;
+            const baneados = todosLosUsuarios.filter(u => u.baneado).length;
+
+            document.getElementById('totalUsuarios').textContent = total;
+            document.getElementById('totalAdmins').textContent = admins;
+            document.getElementById('totalBaneados').textContent = baneados;
+        }
+
+        // Renderizar tabla
+        function renderizarTabla(usuarios) {
+            const tbody = document.getElementById('usuariosTableBody');
+            
+            if (usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-cell">No hay usuarios</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = usuarios.map(u => `
+                <tr class="${u.baneado ? 'row-banned' : ''}">
+                    <td><strong>${u.username}</strong></td>
+                    <td>${u.email}</td>
+                    <td>
+                        <span class="role-badge role-${u.rol}">${u.rol}</span>
+                    </td>
+                    <td><strong>${u.puntos_totales}</strong> pts</td>
+                    <td>Nivel ${u.nivel}</td>
+                    <td>${formatearFecha(u.fecha_registro)}</td>
+                    <td>
+                        ${u.baneado 
+                            ? '<span class="status-badge status-rechazada">Baneado</span>' 
+                            : '<span class="status-badge status-aprobada">Activo</span>'}
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${u.rol !== 'admin' ? (u.baneado 
+                                ? `<button class="btn-small btn-success" onclick="desbanear(${u.user_id})" title="Desbanear">🔓</button>`
+                                : `<button class="btn-small btn-danger" onclick="openBanModal(${u.user_id}, '${u.username}')" title="Banear">🔒</button>`
+                            ) : '<span class="text-muted">-</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filtrar usuarios
+        function filtrarUsuarios() {
+            const rol = document.getElementById('filtroRol').value;
+            
+            if (rol) {
+                const filtrados = todosLosUsuarios.filter(u => u.rol === rol);
+                renderizarTabla(filtrados);
+            } else {
+                renderizarTabla(todosLosUsuarios);
+            }
+        }
+
+        // Abrir modal de banear
+        function openBanModal(userId, username) {
+            usuarioABanear = userId;
+            document.getElementById('banUsername').textContent = username;
+            document.getElementById('banReason').value = '';
+            document.getElementById('banModal').classList.add('active');
+        }
+
+        // Cerrar modal
+        function closeBanModal() {
+            document.getElementById('banModal').classList.remove('active');
+            usuarioABanear = null;
+        }
+
+        // Confirmar baneo
+        async function confirmBan() {
+            const razon = document.getElementById('banReason').value.trim();
+
+            try {
+                const response = await fetch(`${API_URL}/admin/usuarios/${usuarioABanear}/banear`, {
+                    method: 'PUT',
+                    headers: obtenerHeaders(),
+                    body: JSON.stringify({ razon })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                alert('Usuario baneado correctamente');
+                closeBanModal();
+                cargarUsuarios();
+
+            } catch (error) {
+                alert('Error al banear: ' + error.message);
+            }
+        }
+
+        // Desbanear
+        async function desbanear(userId) {
+            if (!confirm('¿Desbanear este usuario?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/admin/usuarios/${userId}/desbanear`, {
+                    method: 'PUT',
+                    headers: obtenerHeaders()
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                alert('Usuario desbaneado');
+                cargarUsuarios();
+
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!verificarAdmin()) return;
+            
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            if (usuario) {
+                document.getElementById('adminName').textContent = usuario.username;
+            }
+            
+            cargarUsuarios();
+            loadStats();
+        });
+    </script>
+</body>
+</html>

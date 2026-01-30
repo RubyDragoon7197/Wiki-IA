@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
             .select(`
                 *,
                 categorias (nombre, slug, icono, color),
-                usuarios (username, avatar)
+                usuarios!ias_usuario_id_fkey (username, avatar)
             `)
             .eq('estado', 'aprobada')
             .eq('activa', true)
@@ -68,7 +68,7 @@ router.get('/:id', async (req, res) => {
             .select(`
                 *,
                 categorias (nombre, slug, icono, color),
-                usuarios (username, avatar)
+                usuarios!ias_usuario_id_fkey (username, avatar)
             `)
             .eq('ia_id', id)
             .eq('estado', 'aprobada')

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - Admin</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Header Admin -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-header-left">
+                <div class="logo">Wiki IA <span class="admin-badge">ADMIN</span></div>
+            </div>
+            <div class="admin-header-right">
+                <span class="admin-user">👤 <span id="adminName">admin</span></span>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">Ver Sitio</button>
+                <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                
+                <a href="pendientes.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    IAs Pendientes
+                    <span class="badge badge-warning" id="pendingCount">0</span>
+                </a>
+                
+                <a href="ias.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Todas las IAs
+                </a>
+                
+                <a href="usuarios.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    Usuarios
+                </a>
+                
+                <a href="categorias.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                    Categorías
+                </a>
+                
+                <a href="historial.html" class="admin-nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Historial
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="admin-main">
+            <div class="admin-header-section">
+                <h1 class="admin-title">Historial de Moderación</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" onclick="cargarHistorial()">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timeline de historial -->
+            <div class="admin-card">
+                <div class="historial-timeline" id="historialTimeline">
+                    <div class="loading-cell">Cargando historial...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+    <script>
+        // Cargar historial
+        async function cargarHistorial() {
+            const timeline = document.getElementById('historialTimeline');
+            timeline.innerHTML = '<div class="loading-cell">Cargando historial...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/admin/historial`, {
+                    headers: obtenerHeaders()
+                });
+
+                if (!response.ok) throw new Error('Error al cargar historial');
+
+                const historial = await response.json();
+
+                if (historial.length === 0) {
+                    timeline.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <h3>Sin historial</h3>
+                            <p>No hay acciones de moderación registradas aún.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                timeline.innerHTML = historial.map(item => `
+                    <div class="historial-item">
+                        <div class="historial-icon ${item.accion === 'aprobar' ? 'icon-success' : 'icon-danger'}">
+                            ${item.accion === 'aprobar' ? '✓' : '✕'}
+                        </div>
+                        <div class="historial-content">
+                            <div class="historial-header">
+                                <strong>${item.ias?.nombre || 'IA eliminada'}</strong>
+                                <span class="historial-action action-${item.accion}">
+                                    ${item.accion === 'aprobar' ? 'Aprobada' : 'Rechazada'}
+                                </span>
+                            </div>
+                            <div class="historial-meta">
+                                <span>📅 ${formatearFecha(item.fecha)}</span>
+                            </div>
+                            ${item.comentario ? `<p class="historial-comment">💬 "${item.comentario}"</p>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                timeline.innerHTML = '<div class="error-cell">Error al cargar historial</div>';
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!verificarAdmin()) return;
+            
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            if (usuario) {
+                document.getElementById('adminName').textContent = usuario.username;
+            }
+            
+            cargarHistorial();
+            loadStats();
+        });
+    </script>
+
+    <style>
+        .historial-timeline {
+            padding: 1rem;
+        }
+
+        .historial-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .historial-item:last-child {
+            border-bottom: none;
+        }
+
+        .historial-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .icon-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .icon-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .historial-content {
+            flex: 1;
+        }
+
+        .historial-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .historial-action {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .action-aprobar {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .action-rechazar {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .historial-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .historial-comment {
+            background: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</body>
+</html>
