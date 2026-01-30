@@ -118,9 +118,16 @@ async function handleLogin(event) {
         // Cerrar modal y actualizar UI
         cerrarModal('loginModal');
         actualizarHeaderUsuario();
-        
-        // Mostrar mensaje de bienvenida (opcional)
-        mostrarNotificacion(`¡Bienvenido, ${data.usuario.username}!`, 'success');
+
+        // Si es admin, redirigir al panel de administración
+        if (data.usuario.rol === 'admin') {
+            mostrarNotificacion(`¡Bienvenido, Admin ${data.usuario.username}!`, 'success');
+            setTimeout(() => {
+                window.location.href = '/admin/dashboard.html';
+            }, 1000);
+        } else {
+            mostrarNotificacion(`¡Bienvenido, ${data.usuario.username}!`, 'success');
+        }
         
     } catch (error) {
         errorDiv.textContent = error.message;

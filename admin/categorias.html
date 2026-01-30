@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías - Admin</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Header Admin -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-header-left">
+                <div class="logo">Wiki IA <span class="admin-badge">ADMIN</span></div>
+            </div>
+            <div class="admin-header-right">
+                <span class="admin-user">👤 <span id="adminName">admin</span></span>
+                <button class="btn btn-secondary" onclick="window.location.href='../index.html'">Ver Sitio</button>
+                <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                
+                <a href="pendientes.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    IAs Pendientes
+                    <span class="badge badge-warning" id="pendingCount">0</span>
+                </a>
+                
+                <a href="ias.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Todas las IAs
+                </a>
+                
+                <a href="usuarios.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    Usuarios
+                </a>
+                
+                <a href="categorias.html" class="admin-nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                    </svg>
+                    Categorías
+                </a>
+                
+                <a href="historial.html" class="admin-nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Historial
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="admin-main">
+            <div class="admin-header-section">
+                <h1 class="admin-title">Categorías</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-secondary" onclick="cargarCategorias()">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid de categorías -->
+            <div class="categories-grid" id="categoriasGrid">
+                <!-- Se carga con JS -->
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin-dashboard.js"></script>
+    <script>
+        // Cargar categorías con estadísticas
+        async function cargarCategorias() {
+            const grid = document.getElementById('categoriasGrid');
+            grid.innerHTML = '<div class="loading-cell">Cargando categorías...</div>';
+
+            try {
+                // Obtener categorías
+                const response = await fetch(`${API_URL}/categorias`);
+                if (!response.ok) throw new Error('Error al cargar categorías');
+                const categorias = await response.json();
+
+                // Obtener todas las IAs para contar
+                const iasResponse = await fetch(`${API_URL}/admin/ias`, {
+                    headers: obtenerHeaders()
+                });
+                const todasIAs = await iasResponse.json();
+
+                // Renderizar
+                grid.innerHTML = categorias.map(cat => {
+                    const iasCategoria = todasIAs.filter(ia => ia.categoria_id === cat.categoria_id);
+                    const aprobadas = iasCategoria.filter(ia => ia.estado === 'aprobada').length;
+                    const pendientes = iasCategoria.filter(ia => ia.estado === 'pendiente').length;
+
+                    return `
+                        <div class="category-card-admin">
+                            <div class="category-icon-large">${cat.icono}</div>
+                            <h3>${cat.nombre}</h3>
+                            <p class="category-description">${cat.descripcion || 'Sin descripción'}</p>
+                            <div class="category-stats-admin">
+                                <div class="cat-stat">
+                                    <span class="cat-stat-num">${aprobadas}</span>
+                                    <span class="cat-stat-label">Aprobadas</span>
+                                </div>
+                                <div class="cat-stat">
+                                    <span class="cat-stat-num">${pendientes}</span>
+                                    <span class="cat-stat-label">Pendientes</span>
+                                </div>
+                            </div>
+                            <a href="../pages/${cat.slug}.html" class="btn btn-secondary btn-small" target="_blank">
+                                Ver en sitio →
+                            </a>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                grid.innerHTML = '<div class="error-cell">Error al cargar categorías</div>';
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!verificarAdmin()) return;
+            
+            const usuario = JSON.parse(localStorage.getItem('usuario'));
+            if (usuario) {
+                document.getElementById('adminName').textContent = usuario.username;
+            }
+            
+            cargarCategorias();
+            loadStats();
+        });
+    </script>
+
+    <style>
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-card-admin {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .category-card-admin:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .category-icon-large {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card-admin h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .category-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-stats-admin {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            padding: 1rem 0;
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cat-stat {
+            text-align: center;
+        }
+
+        .cat-stat-num {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .cat-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+    </style>
+</body>
+</html>

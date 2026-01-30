@@ -71,7 +71,7 @@ router.get('/ias/pendientes', async (req, res) => {
             .select(`
                 *,
                 categorias (nombre, slug),
-                usuarios (username, email, puntos_totales)
+                usuarios!ias_usuario_id_fkey (username, email, puntos_totales)
             `)
             .eq('estado', 'pendiente')
             .order('fecha_publicacion', { ascending: true });
@@ -94,7 +94,7 @@ router.put('/ias/:id/aprobar', async (req, res) => {
         // Obtener la IA
         const { data: ia } = await supabase
             .from('ias')
-            .select('*, usuarios(username)')
+            .select('*, usuarios!ias_usuario_id_fkey(username)')
             .eq('ia_id', id)
             .single();
 
@@ -263,7 +263,7 @@ router.get('/ias', async (req, res) => {
             .select(`
                 *,
                 categorias (nombre, slug),
-                usuarios (username, email)
+                usuarios!ias_usuario_id_fkey (username, email)
             `)
             .order('fecha_publicacion', { ascending: false })
             .limit(limite);
@@ -369,8 +369,7 @@ router.get('/historial', async (req, res) => {
             .from('historial_moderacion')
             .select(`
                 *,
-                ias (nombre),
-                usuarios:admin_id (username)
+                ias (nombre)
             `)
             .order('fecha', { ascending: false })
             .limit(limite);
