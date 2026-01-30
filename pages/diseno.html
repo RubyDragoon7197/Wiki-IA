@@ -1,82 +1,280 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diseño - Wiki IA</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diseño - Wiki IA</title>
+    <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
-  <header>
-      <div class="header-content">
-          <div class="header-left">
-              <div class="logo">Wiki IA</div>
-              <div class="search-container">
-                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                  </svg>
-                  <input type="text" class="search-input" placeholder="Buscar una IA">
-              </div>
-          </div>
-          <div class="header-buttons">
-              <button class="btn btn-secondary">Iniciar sesión</button>
-              <button class="btn btn-primary">Registrarse</button>
-          </div>
-      </div>
-  </header>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <a href="../index.html" class="logo">Wiki IA</a>
+                <div class="search-container">
+                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Buscar una IA" id="searchInput">
+                </div>
+            </div>
+            <div class="header-buttons" id="headerButtons">
+                <button class="btn btn-secondary" onclick="abrirModal('loginModal')">Iniciar sesión</button>
+                <button class="btn btn-primary" onclick="abrirModal('registroModal')">Registrarse</button>
+            </div>
+            <div class="header-buttons header-user" id="headerUser" style="display: none;">
+                <span class="user-welcome">Hola, <strong id="userName">Usuario</strong></span>
+                <span class="user-points" id="userPoints">0 pts</span>
+                <button class="btn btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
+        </div>
+    </header>
 
-  <main class="main-content">
-    <div class="container">
-      <nav class="breadcrumb">
-        <a href="../index.html">Inicio</a>
-        <span class="breadcrumb-sep">/</span>
-        <span>Diseño</span>
-      </nav>
-      <h1 class="title">Diseño</h1>
-      <p>Contenido de la categoría Diseño (placeholder).</p>
-      <a href="../index.html" class="btn btn-primary" style="display:inline-block;margin-top:1rem;">← Volver al inicio</a>
-    </div>
-  </main>
-  
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <a href="../index.html">Inicio</a>
+                <span class="breadcrumb-sep">/</span>
+                <span id="categoriaNombre">Diseño</span>
+            </nav>
+
+            <!-- Título y descripción de la categoría -->
+            <div class="categoria-header">
+                <div class="categoria-info">
+                    <h1 class="title" id="categoriaTitulo">
+                        <span class="categoria-icono" id="categoriaIcono">✏️</span>
+                        Diseño
+                    </h1>
+                    <p class="categoria-descripcion" id="categoriaDescripcion">
+                        Herramientas de diseño gráfico y UX/UI
+                    </p>
+                </div>
+                <div class="categoria-stats">
+                    <div class="stat-badge">
+                        <span class="stat-numero" id="totalIAs">0</span>
+                        <span class="stat-texto">IAs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-container">
+                <button class="filter-btn active" data-filter="most-used">
+                    <svg class="filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    Más usadas
+                </button>
+                <button class="filter-btn" data-filter="top-rated">
+                    <svg class="filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                    </svg>
+                    Mejor calificadas
+                </button>
+                <button class="filter-btn" data-filter="latest">
+                    <svg class="filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Más recientes
+                </button>
+            </div>
+
+            <!-- Estado de carga -->
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <p>Cargando IAs...</p>
+            </div>
+
+            <!-- Estado vacío -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">📭</div>
+                <h3>No hay IAs en esta categoría</h3>
+                <p>Sé el primero en publicar una IA de diseño</p>
+                <button class="btn btn-primary" onclick="abrirModalPublicarIA()">Publicar IA</button>
+            </div>
+
+            <!-- Grid de IAs -->
+            <div class="ai-grid" id="aiGrid">
+                <!-- Las IAs se cargan dinámicamente aquí -->
+            </div>
+        </div>
+    </main>
+
     <!-- Chatbot Button -->
     <button class="chatbot-button" id="chatbotBtn">
-      <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-      </svg>
+        <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+        </svg>
     </button>
 
     <!-- Chatbot Window -->
     <div class="chatbot-window" id="chatbotWindow">
-      <div class="chatbot-header">
-        <div class="chatbot-header-left">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-          </svg>
-          <span style="font-weight: 600;">Asistente IA</span>
+        <div class="chatbot-header">
+            <div class="chatbot-header-left">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                <span style="font-weight: 600;">Asistente IA</span>
+            </div>
+            <button class="chatbot-close" id="chatbotClose">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
-        <button class="chatbot-close" id="chatbotClose">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      <div class="chatbot-body" id="chatbotBody">
-        <div class="chat-message">
-          <p>¡Hola! ¿En qué puedo ayudarte hoy?</p>
+        <div class="chatbot-body" id="chatbotBody">
+            <div class="chat-message">
+                <p>¡Hola! ¿En qué puedo ayudarte hoy?</p>
+            </div>
         </div>
-      </div>
-      <div class="chatbot-footer">
-        <div class="chat-input-container">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
-          <button class="chat-send" id="chatSend">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-            </svg>
-          </button>
+        <div class="chatbot-footer">
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
+                <button class="chat-send" id="chatSend">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-      </div>
     </div>
 
+    <!-- Modales de autenticación (copiar los mismos del index.html) -->
+    <!-- Modal Login -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Iniciar Sesión</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('loginModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Correo electrónico</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="loginBtn">Iniciar Sesión</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿No tienes cuenta? <a href="#" onclick="cambiarModal('loginModal', 'registroModal')">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registro -->
+    <div class="modal-overlay" id="registroModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Crear Cuenta</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('registroModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="registroForm" onsubmit="handleRegistro(event)">
+                    <div class="form-group">
+                        <label for="registroUsername">Nombre de usuario</label>
+                        <input type="text" id="registroUsername" name="username" placeholder="usuario123" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroEmail">Correo electrónico</label>
+                        <input type="email" id="registroEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPassword">Contraseña</label>
+                        <input type="password" id="registroPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPasswordConfirm">Confirmar contraseña</label>
+                        <input type="password" id="registroPasswordConfirm" name="passwordConfirm" placeholder="Repite tu contraseña" required>
+                    </div>
+                    <div class="form-error" id="registroError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="registroBtn">Crear Cuenta</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿Ya tienes cuenta? <a href="#" onclick="cambiarModal('registroModal', 'loginModal')">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Publicar IA -->
+    <div class="modal-overlay" id="publicarIAModal">
+        <div class="modal-container modal-lg">
+            <div class="modal-header">
+                <h2>Publicar Nueva IA</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('publicarIAModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-required-message" id="authRequiredMessage">
+                    <div class="auth-required-icon">🔒</div>
+                    <h3>Inicia sesión para publicar</h3>
+                    <p>Necesitas una cuenta para publicar nuevas IAs y ganar puntos.</p>
+                    <div class="auth-required-buttons">
+                        <button class="btn btn-primary" onclick="cambiarModal('publicarIAModal', 'loginModal')">Iniciar Sesión</button>
+                        <button class="btn btn-secondary" onclick="cambiarModal('publicarIAModal', 'registroModal')">Crear Cuenta</button>
+                    </div>
+                </div>
+                <form id="publicarIAForm" onsubmit="handlePublicarIA(event)" style="display: none;">
+                    <div class="form-group">
+                        <label for="iaNombre">Nombre de la IA *</label>
+                        <input type="text" id="iaNombre" name="nombre" placeholder="Ej: ChatGPT, Midjourney, etc." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="iaCategoria">Categoría *</label>
+                        <select id="iaCategoria" name="categoria" required>
+                            <option value="">Selecciona una categoría</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="iaUrl">URL de la IA *</label>
+                        <input type="url" id="iaUrl" name="url" placeholder="https://ejemplo.com" required>
+                        <span class="form-hint">Enlace directo a la herramienta de IA</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="iaDescripcion">Descripción *</label>
+                        <textarea id="iaDescripcion" name="descripcion" rows="4" placeholder="Describe qué hace esta IA..." required minlength="50"></textarea>
+                        <span class="form-hint">Mínimo 50 caracteres</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="iaImagen">URL de imagen/logo (opcional)</label>
+                        <input type="url" id="iaImagen" name="imagen" placeholder="https://ejemplo.com/logo.png">
+                    </div>
+                    <div class="form-info">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Tu publicación será revisada antes de aparecer. Recibirás <strong>50 puntos</strong> cuando sea aprobada.</span>
+                    </div>
+                    <div class="form-error" id="publicarIAError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="publicarIABtn">Enviar para Revisión</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="../js/script.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/categorias.js"></script>
 </body>
 </html>
