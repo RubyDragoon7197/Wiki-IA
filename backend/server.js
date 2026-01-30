@@ -6,7 +6,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permitir todos los orígenes (para desarrollo)
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.static('public')); // Para servir archivos estáticos del frontend
 
@@ -29,6 +33,27 @@ app.use('/api/favoritos', favoritosRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/medallas', medallasRoutes);
+
+// Ruta raíz - información de la API
+app.get('/', (req, res) => {
+    res.json({
+        nombre: 'Wiki IA - API Backend',
+        version: '1.0.0',
+        mensaje: '⚠️  Esta es la API del backend. Para acceder al frontend, usa el puerto 5500',
+        endpoints: {
+            health: '/api/health',
+            auth: '/api/auth',
+            ias: '/api/ias',
+            categorias: '/api/categorias',
+            resenas: '/api/resenas',
+            favoritos: '/api/favoritos',
+            usuarios: '/api/usuarios',
+            admin: '/api/admin',
+            medallas: '/api/medallas'
+        },
+        instrucciones: 'Abre index.html en el puerto 5500 para ver la aplicación web'
+    });
+});
 
 // Ruta de prueba
 app.get('/api/health', (req, res) => {

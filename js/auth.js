@@ -2,18 +2,23 @@
 // CONFIGURACIÓN DE LA API
 // =============================================
 
-const API_URL = 'http://localhost:3000/api';
+let API_URL = 'http://localhost:3000/api';
 
 // Detectar si estamos en Codespaces y ajustar la URL
-if (window.location.hostname.includes('github.dev')) {
+if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
     // Extraer la base URL de Codespaces y cambiar al puerto 3000
-    const baseUrl = window.location.origin.replace('-5500', '-3000').replace('-5501', '-3000');
-    // Si no hay puerto en la URL original, construir la URL de la API
-    if (!window.location.origin.includes('-3000')) {
-        const parts = window.location.hostname.split('-');
-        parts[parts.length - 1] = '3000.app.github.dev';
-        window.API_URL = `https://${parts.join('-')}`;
+    const currentUrl = window.location.origin;
+    
+    // Si la URL contiene un puerto específico (5500, 5501, etc), reemplazarlo por 3000
+    if (currentUrl.match(/-\d{4,5}\.app\.github\.dev/)) {
+        API_URL = currentUrl.replace(/-\d{4,5}\.app\.github\.dev/, '-3000.app.github.dev') + '/api';
+    } else {
+        // Si no tiene puerto en la URL, agregar -3000
+        const hostname = window.location.hostname;
+        const baseHostname = hostname.split('.')[0]; // obtener la parte antes del primer punto
+        API_URL = `https://${baseHostname}-3000.app.github.dev/api`;
     }
+    console.log('🌐 Detectado ambiente Codespaces. API URL:', API_URL);
 }
 
 // =============================================
