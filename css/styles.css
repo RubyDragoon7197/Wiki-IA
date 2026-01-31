@@ -36,6 +36,7 @@ header {
     font-size: 1.5rem;
     font-weight: bold;
     color: #4f46e5;
+    text-decoration: none;
 }
 
 .search-container {
