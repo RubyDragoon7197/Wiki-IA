@@ -216,6 +216,7 @@ function cerrarSesion() {
 function actualizarHeaderUsuario() {
     const headerButtons = document.getElementById('headerButtons');
     const headerUser = document.getElementById('headerUser');
+    const adminPanelBtn = document.getElementById('adminPanelBtn');
     const usuario = obtenerUsuario();
     
     if (usuario && headerButtons && headerUser) {
@@ -225,11 +226,22 @@ function actualizarHeaderUsuario() {
         
         document.getElementById('userName').textContent = usuario.username;
         document.getElementById('userPoints').textContent = `${usuario.puntos_totales || 0} pts`;
+        
+        // Mostrar botón de Panel Admin solo si es admin
+        if (adminPanelBtn) {
+            adminPanelBtn.style.display = usuario.rol === 'admin' ? 'inline-block' : 'none';
+        }
     } else if (headerButtons && headerUser) {
         // Usuario no logueado
         headerButtons.style.display = 'flex';
         headerUser.style.display = 'none';
+        if (adminPanelBtn) {
+            adminPanelBtn.style.display = 'none';
+        }
     }
+    
+    // Marcar que la autenticación ya fue procesada para mostrar el header
+    document.body.classList.add('auth-loaded');
 }
 
 // =============================================

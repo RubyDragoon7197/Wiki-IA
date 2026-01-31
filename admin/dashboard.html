@@ -17,7 +17,7 @@
             <div class="admin-header-right">
                 <span class="admin-user">👤 admin</span>
                 <button class="btn btn-secondary" onclick="window.location.href='../index.html'">Ver Sitio</button>
-                <button class="btn btn-danger">Cerrar Sesión</button>
+                <button class="btn btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
             </div>
         </div>
     </header>
@@ -38,7 +38,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     IAs Pendientes
-                    <span class="badge badge-warning" id="pendingCount">5</span>
+                    <span class="badge badge-warning" id="pendingCount">0</span>
                 </a>
                 
                 <a href="ias.html" class="admin-nav-item">
@@ -85,7 +85,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-label">Total Usuarios</div>
-                        <div class="stat-value" id="totalUsuarios">1,234</div>
+                        <div class="stat-value" id="totalUsuarios">0</div>
                         <div class="stat-change stat-change-positive">+12% este mes</div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-label">IAs Aprobadas</div>
-                        <div class="stat-value" id="totalAprobadas">87</div>
+                        <div class="stat-value" id="totalAprobadas">0</div>
                         <div class="stat-change stat-change-positive">+5 esta semana</div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-label">IAs Pendientes</div>
-                        <div class="stat-value" id="totalPendientes">5</div>
+                        <div class="stat-value" id="totalPendientes">0</div>
                         <div class="stat-change stat-change-warning">Requieren atención</div>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                     </div>
                     <div class="stat-content">
                         <div class="stat-label">Total Visitas</div>
-                        <div class="stat-value" id="totalVisitas">45.2K</div>
+                        <div class="stat-value" id="totalVisitas">0</div>
                         <div class="stat-change stat-change-positive">+8% este mes</div>
                     </div>
                 </div>

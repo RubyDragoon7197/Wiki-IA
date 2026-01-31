@@ -490,10 +490,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar categorías primero (necesarias para el modal)
     await loadCategorias();
 
-    // Cargar todos los datos
-    await loadStats();
-    await loadPendingIAs();
-    await loadRecentIAs();
-    await loadActivity();
-    await loadTopUsers();
+    // Cargar todos los datos EN PARALELO para mayor velocidad
+    await Promise.all([
+        loadStats(),
+        loadPendingIAs(),
+        loadRecentIAs(),
+        loadActivity(),
+        loadTopUsers()
+    ]);
 });
