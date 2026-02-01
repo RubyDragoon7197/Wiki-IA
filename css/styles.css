@@ -1953,3 +1953,20 @@ body:not(.auth-loaded) #headerUser {
     color: #9ca3af;
     font-style: italic;
 }
+
+.ai-card-actions-fav {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.ai-card-actions-fav .ai-link-btn {
+    flex: 1;
+}
+
+.btn-quitar-fav {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
