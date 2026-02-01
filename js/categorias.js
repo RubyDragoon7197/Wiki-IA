@@ -84,6 +84,7 @@ function renderizarIAs(ias) {
 }
 
 // Crear tarjeta individual de IA
+// Crear tarjeta individual de IA
 function crearTarjetaIA(ia) {
     const card = document.createElement('div');
     card.className = 'ai-card';
@@ -91,48 +92,48 @@ function crearTarjetaIA(ia) {
     card.dataset.uses = ia.total_usos || 0;
     card.dataset.date = ia.fecha_publicacion;
 
-    // Generar estrellas
     const rating = parseFloat(ia.calificacion_promedio) || 0;
-    const estrellas = '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating));
 
     card.innerHTML = `
-        <div class="ai-card-header">
-            <div class="ai-logo-placeholder">
-                ${ia.imagen_logo 
-                    ? `<img src="${ia.imagen_logo}" alt="${ia.nombre}" onerror="this.parentElement.innerHTML='🤖'">`
-                    : '🤖'
-                }
+        <div class="ai-card-clickable" onclick="abrirDetalleIA(${ia.ia_id})">
+            <div class="ai-card-header">
+                <div class="ai-logo-placeholder">
+                    ${ia.imagen_logo 
+                        ? `<img src="${ia.imagen_logo}" alt="${ia.nombre}" onerror="this.parentElement.innerHTML='🤖'">`
+                        : (ia.categorias?.icono || '🤖')
+                    }
+                </div>
+                <div class="ai-rating">
+                    <span class="star-filled">★</span>
+                    <span>${rating.toFixed(1)}</span>
+                </div>
             </div>
-            <div class="ai-rating">
-                <span class="stars">${estrellas}</span>
-                <span>${rating.toFixed(1)}</span>
+            <h3 class="ai-name">${ia.nombre}</h3>
+            <p class="ai-description">${truncarTexto(ia.descripcion, 80)}</p>
+            <div class="ai-meta">
+                <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
+            </div>
+            <div class="ai-stats">
+                <span>🎯 ${formatearNumero(ia.total_usos)} usos</span>
+                <span>📅 ${formatearFechaMes(ia.fecha_publicacion)}</span>
             </div>
         </div>
-        <h3 class="ai-name">${ia.nombre}</h3>
-        <p class="ai-description">${truncarTexto(ia.descripcion, 100)}</p>
-        <div class="ai-meta">
-            <span class="ai-category">${categoriaActual?.icono || '📁'} ${categoriaActual?.nombre || 'General'}</span>
-        </div>
-        <div class="ai-stats">
-            <span>👁 ${formatearNumero(ia.total_usos)} usos</span>
-            <span>📝 ${ia.total_resenas || 0} reseñas</span>
-        </div>
-        <div class="ai-card-actions">
-            <a href="${ia.url}" target="_blank" rel="noopener noreferrer" class="ai-link-btn">
-                Visitar IA
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-            </a>
-            <button class="btn-icon-only" onclick="toggleFavorito(${ia.ia_id})" title="Agregar a favoritos">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-            </button>
-        </div>
+        <a href="${ia.url}" target="_blank" rel="noopener noreferrer" class="btn btn-primary ai-link-btn" onclick="event.stopPropagation()">
+            Visitar IA
+        </a>
     `;
 
     return card;
+}
+
+// Agregar esta función si no existe
+function formatearFechaMes(fecha) {
+    if (!fecha) return '';
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-ES', {
+        month: 'short',
+        year: 'numeric'
+    });
 }
 
 // Truncar texto

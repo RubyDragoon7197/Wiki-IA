@@ -38,16 +38,20 @@ router.get('/:slug', async (req, res) => {
         }
 
         // Obtener IAs de esta categoría
-        const { data: ias } = await supabase
+        const { data: ias, error: iasError } = await supabase
             .from('ias')
             .select(`
                 *,
-                usuarios (username, avatar)
+                categorias (nombre, slug, icono, color),
+                usuarios!ias_usuario_id_fkey (username, avatar)
             `)
             .eq('categoria_id', categoria.categoria_id)
             .eq('estado', 'aprobada')
-            .eq('activa', true)
             .order('total_usos', { ascending: false });
+
+        if (iasError) {
+            console.error('Error al obtener IAs:', iasError);
+        }
 
         res.json({
             categoria,
