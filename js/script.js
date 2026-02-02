@@ -10,7 +10,6 @@ const chatInput = document.getElementById('chatInput');
 const chatbotBody = document.getElementById('chatbotBody');
 
 if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chatbotBody) {
-    // Cargar historial de mensajes desde localStorage
     function loadChatHistory() {
         const history = localStorage.getItem('chatbot_history');
         if (history) {
@@ -28,7 +27,6 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         }
     }
 
-    // Guardar mensaje en localStorage
     function saveMessage(text, isUser = true) {
         const history = localStorage.getItem('chatbot_history');
         const messages = history ? JSON.parse(history) : [{text: '¡Hola! ¿En qué puedo ayudarte hoy?', isUser: false}];
@@ -36,7 +34,6 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         localStorage.setItem('chatbot_history', JSON.stringify(messages));
     }
 
-    // Cargar estado del chatbot (abierto/cerrado)
     function loadChatState() {
         const state = localStorage.getItem('chatbot_state');
         if (state === 'open') {
@@ -45,7 +42,6 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         }
     }
 
-    // Enviar mensaje
     function sendMessage() {
         const message = chatInput.value.trim();
         if (message) {
@@ -59,11 +55,9 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         }
     }
 
-    // Inicialización
     loadChatHistory();
     loadChatState();
 
-    // Event listeners
     chatbotBtn.addEventListener('click', () => {
         chatbotWindow.classList.add('active');
         chatbotBtn.style.display = 'none';
@@ -100,7 +94,7 @@ if (categoriesToggle) {
 }
 
 // =============================================================================
-// SISTEMA DE PAGINACIÓN
+// SISTEMA DE PAGINACIÓN CON API REAL
 // =============================================================================
 
 class Pagination {
@@ -109,9 +103,8 @@ class Pagination {
         this.currentPage = 1;
         this.totalItems = 0;
         this.currentFilter = 'most-used';
-        this.isInitialLoad = true; // Bandera para evitar scroll en carga inicial
+        this.allAIs = [];
         
-        // Elementos del DOM
         this.aiGrid = document.getElementById('aiGrid');
         this.paginationContainer = document.getElementById('paginationContainer');
         this.paginationNumbers = document.getElementById('paginationNumbers');
@@ -120,14 +113,10 @@ class Pagination {
         this.btnNext = document.getElementById('btnNext');
         this.mainTitle = document.getElementById('mainTitle');
         
-        // Datos de ejemplo (esto vendrá de tu base de datos)
-        this.allAIs = this.generateSampleData(50); // 50 IAs de ejemplo
-        
         this.init();
     }
     
-    init() {
-        // Event listeners
+    async init() {
         if (this.btnPrevious) {
             this.btnPrevious.addEventListener('click', () => this.previousPage());
         }
@@ -136,30 +125,30 @@ class Pagination {
             this.btnNext.addEventListener('click', () => this.nextPage());
         }
         
-        // Cargar página inicial
+        // Cargar IAs desde la API
+        await this.loadAIsFromAPI();
         this.loadPage(1);
     }
     
-    generateSampleData(count) {
-        // Datos de ejemplo - REEMPLAZAR con datos de tu BD
-        const categories = ['Programación', 'Diseño', 'Educación', 'Tecnología', 'Salud', 'Ciencia'];
-        const ais = [];
-        
-        for (let i = 1; i <= count; i++) {
-            ais.push({
-                id: i,
-                name: `IA Ejemplo ${i}`,
-                description: `Descripción de la IA número ${i}`,
-                category: categories[Math.floor(Math.random() * categories.length)],
-                rating: (Math.random() * 2 + 3).toFixed(1), // 3.0 - 5.0
-                uses: Math.floor(Math.random() * 25000) + 1000,
-                date: new Date(2024, 0, Math.floor(Math.random() * 20) + 1),
-                url: `https://ejemplo${i}.com`,
-                emoji: ['🤖', '🎨', '💻', '🔬', '📊', '🎯'][Math.floor(Math.random() * 6)]
-            });
+    async loadAIsFromAPI() {
+        try {
+            // Mostrar loading
+            if (this.aiGrid) {
+                this.aiGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Cargando IAs...</p></div>';
+            }
+
+            const response = await fetch(`${API_URL}/ias`);
+            if (!response.ok) throw new Error('Error al cargar IAs');
+            
+            const ias = await response.json();
+            this.allAIs = ias;
+            
+        } catch (error) {
+            console.error('Error al cargar IAs:', error);
+            if (this.aiGrid) {
+                this.aiGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Error al cargar</h3><p>No se pudieron cargar las IAs</p></div>';
+            }
         }
-        
-        return ais;
     }
     
     filterAndSort(filter) {
@@ -168,13 +157,13 @@ class Pagination {
         
         switch(filter) {
             case 'latest':
-                sorted.sort((a, b) => b.date - a.date);
+                sorted.sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion));
                 break;
             case 'top-rated':
-                sorted.sort((a, b) => b.rating - a.rating);
+                sorted.sort((a, b) => (parseFloat(b.calificacion_promedio) || 0) - (parseFloat(a.calificacion_promedio) || 0));
                 break;
             case 'most-used':
-                sorted.sort((a, b) => b.uses - a.uses);
+                sorted.sort((a, b) => (b.total_usos || 0) - (a.total_usos || 0));
                 break;
         }
         
@@ -184,85 +173,103 @@ class Pagination {
     loadPage(page) {
         this.currentPage = page;
         
-        // Filtrar y ordenar
         const filteredAIs = this.filterAndSort(this.currentFilter);
         this.totalItems = filteredAIs.length;
         
-        // Calcular rango
         const startIndex = (page - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
         const pageItems = filteredAIs.slice(startIndex, endIndex);
         
-        // Renderizar IAs
         this.renderAIs(pageItems);
-        
-        // Actualizar controles de paginación
         this.updatePaginationControls();
     }
     
-    renderAIs(ais) {
+    renderAIs(ias) {
         if (!this.aiGrid) return;
+        
+        if (ias.length === 0) {
+            this.aiGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><h3>No hay IAs</h3><p>Aún no hay IAs publicadas</p></div>';
+            return;
+        }
         
         this.aiGrid.innerHTML = '';
         
-        ais.forEach(ai => {
-            const card = this.createAICard(ai);
+        ias.forEach(ia => {
+            const card = this.createAICard(ia);
             this.aiGrid.appendChild(card);
         });
     }
     
-    createAICard(ai) {
+    createAICard(ia) {
         const card = document.createElement('div');
         card.className = 'ai-card';
-        card.setAttribute('data-date', ai.date.toISOString().split('T')[0]);
-        card.setAttribute('data-rating', ai.rating);
-        card.setAttribute('data-uses', ai.uses);
+        
+        const rating = parseFloat(ia.calificacion_promedio) || 0;
+        const fecha = ia.fecha_publicacion ? new Date(ia.fecha_publicacion) : new Date();
         
         card.innerHTML = `
-            <div class="ai-card-header">
-                <div class="ai-logo-placeholder">${ai.emoji}</div>
-                <div class="ai-rating">
-                    <svg class="star-icon" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                    </svg>
-                    <span>${ai.rating}</span>
+            <div class="ai-card-clickable" onclick="abrirDetalleIA(${ia.ia_id})">
+                <div class="ai-card-header">
+                    <div class="ai-logo-placeholder">
+                        ${ia.imagen_logo 
+                            ? `<img src="${ia.imagen_logo}" alt="${ia.nombre}" onerror="this.parentElement.innerHTML='🤖'">`
+                            : (ia.categorias?.icono || '🤖')
+                        }
+                    </div>
+                    <div class="ai-rating">
+                        <span class="star-filled">★</span>
+                        <span>${rating.toFixed(1)}</span>
+                    </div>
+                </div>
+                <h3 class="ai-name">${ia.nombre}</h3>
+                <p class="ai-description">${this.truncarTexto(ia.descripcion, 80)}</p>
+                <div class="ai-meta">
+                    <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
+                </div>
+                <div class="ai-stats">
+                    <span>🎯 ${this.formatearNumero(ia.total_usos)} usos</span>
+                    <span>📅 ${fecha.toLocaleDateString('es', {month: 'short', year: 'numeric'})}</span>
                 </div>
             </div>
-            <h3 class="ai-name">${ai.name}</h3>
-            <p class="ai-description">${ai.description}</p>
-            <div class="ai-meta">
-                <span class="ai-category">${ai.category}</span>
-            </div>
-            <div class="ai-stats">
-                <span>👁️ ${(ai.uses / 1000).toFixed(1)}K usos</span>
-                <span>📅 ${ai.date.toLocaleDateString('es', {month: 'short', year: 'numeric'})}</span>
-            </div>
-            <a href="${ai.url}" target="_blank" class="ai-link-btn">Visitar IA</a>
+            <a href="${ia.url}" target="_blank" class="btn btn-primary ai-link-btn" onclick="event.stopPropagation()">Visitar IA</a>
         `;
         
         return card;
     }
     
+    truncarTexto(texto, max) {
+        if (!texto) return '';
+        return texto.length > max ? texto.substring(0, max) + '...' : texto;
+    }
+    
+    formatearNumero(num) {
+        if (!num) return '0';
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+        return num.toString();
+    }
+    
     updatePaginationControls() {
         const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
         
-        // Actualizar botones prev/next
         if (this.btnPrevious) {
             this.btnPrevious.disabled = this.currentPage === 1;
         }
         
         if (this.btnNext) {
-            this.btnNext.disabled = this.currentPage === totalPages;
+            this.btnNext.disabled = this.currentPage === totalPages || totalPages === 0;
         }
         
-        // Renderizar números de página
         this.renderPageNumbers(totalPages);
         
-        // Actualizar info
         if (this.paginationInfo) {
-            const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-            const end = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-            this.paginationInfo.textContent = `Mostrando ${start}-${end} de ${this.totalItems} IAs`;
+            if (this.totalItems === 0) {
+                this.paginationInfo.textContent = 'No hay IAs para mostrar';
+            } else {
+                const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+                const end = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+                this.paginationInfo.textContent = `Mostrando ${start}-${end} de ${this.totalItems} IAs`;
+            }
         }
     }
     
@@ -271,7 +278,8 @@ class Pagination {
         
         this.paginationNumbers.innerHTML = '';
         
-        // Lógica de paginación inteligente
+        if (totalPages === 0) return;
+        
         const maxVisible = 5;
         let startPage = Math.max(1, this.currentPage - 2);
         let endPage = Math.min(totalPages, startPage + maxVisible - 1);
@@ -280,7 +288,6 @@ class Pagination {
             startPage = Math.max(1, endPage - maxVisible + 1);
         }
         
-        // Botón primera página
         if (startPage > 1) {
             this.addPageButton(1);
             if (startPage > 2) {
@@ -288,12 +295,10 @@ class Pagination {
             }
         }
         
-        // Páginas visibles
         for (let i = startPage; i <= endPage; i++) {
             this.addPageButton(i);
         }
         
-        // Botón última página
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
                 this.addDots();
@@ -335,7 +340,7 @@ class Pagination {
     
     changeFilter(filter) {
         this.currentFilter = filter;
-        this.loadPage(1); // Volver a página 1 al cambiar filtro
+        this.loadPage(1);
     }
 }
 
@@ -346,24 +351,21 @@ class Pagination {
 let pagination;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar paginación (12 IAs por página)
-    pagination = new Pagination(12);
+    // Solo inicializar paginación si estamos en la página principal (index.html)
+    if (document.getElementById('aiGrid') && document.getElementById('paginationContainer')) {
+        pagination = new Pagination(12);
+    }
     
     // Conectar con los filtros
     const filterBtns = document.querySelectorAll('.filter-btn');
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Quitar active de todos
             filterBtns.forEach(b => b.classList.remove('active'));
-            
-            // Agregar active al clickeado
             btn.classList.add('active');
             
-            // Obtener filtro
             const filter = btn.getAttribute('data-filter');
             
-            // Cambiar título
             const titles = {
                 'latest': 'Últimas IAs Publicadas',
                 'top-rated': 'IAs Mejor Calificadas',
@@ -375,16 +377,133 @@ document.addEventListener('DOMContentLoaded', () => {
                 mainTitle.textContent = titles[filter];
             }
             
-            // Aplicar filtro y recargar
             if (pagination) {
                 pagination.changeFilter(filter);
             }
         });
     });
-    
-    // Aplicar filtro por defecto (más usadas)
-    const defaultBtn = document.querySelector('[data-filter="most-used"]');
-    if (defaultBtn) {
-        defaultBtn.click();
+});
+
+// =============================================================================
+// BÚSQUEDA GLOBAL
+// =============================================================================
+
+function configurarBusquedaGlobal() {
+    const searchInput = document.querySelector('.search-input');
+    if (!searchInput) return;
+
+    let timeout;
+
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(timeout);
+        const termino = e.target.value.trim();
+
+        timeout = setTimeout(async () => {
+            if (termino.length < 2) {
+                // Si está en index.html, recargar todas las IAs
+                if (pagination) {
+                    pagination.loadPage(1);
+                }
+                return;
+            }
+
+            await buscarIAs(termino);
+        }, 300);
+    });
+
+    // Buscar al presionar Enter
+    searchInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+            const termino = e.target.value.trim();
+            if (termino.length >= 2) {
+                await buscarIAs(termino);
+            }
+        }
+    });
+}
+
+async function buscarIAs(termino) {
+    const aiGrid = document.getElementById('aiGrid');
+    if (!aiGrid) return;
+
+    // Mostrar loading
+    aiGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Buscando...</p></div>';
+
+    try {
+        const response = await fetch(`${API_URL}/ias/buscar/${encodeURIComponent(termino)}`);
+        if (!response.ok) throw new Error('Error en búsqueda');
+
+        const ias = await response.json();
+
+        // Actualizar título
+        const mainTitle = document.getElementById('mainTitle');
+        if (mainTitle) {
+            mainTitle.textContent = `Resultados para "${termino}"`;
+        }
+
+        // Ocultar paginación durante búsqueda
+        const paginationContainer = document.getElementById('paginationContainer');
+        const paginationInfo = document.getElementById('paginationInfo');
+        if (paginationContainer) paginationContainer.style.display = 'none';
+        if (paginationInfo) paginationInfo.textContent = `${ias.length} resultado(s) encontrado(s)`;
+
+        // Mostrar resultados
+        if (ias.length === 0) {
+            aiGrid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h3>Sin resultados</h3>
+                    <p>No se encontraron IAs para "${termino}"</p>
+                </div>
+            `;
+            return;
+        }
+
+        aiGrid.innerHTML = '';
+        ias.forEach(ia => {
+            const card = crearTarjetaBusqueda(ia);
+            aiGrid.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error('Error en búsqueda:', error);
+        aiGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Error</h3><p>No se pudo realizar la búsqueda</p></div>';
     }
+}
+
+function crearTarjetaBusqueda(ia) {
+    const card = document.createElement('div');
+    card.className = 'ai-card';
+
+    const rating = parseFloat(ia.calificacion_promedio) || 0;
+
+    card.innerHTML = `
+        <div class="ai-card-clickable" onclick="abrirDetalleIA(${ia.ia_id})">
+            <div class="ai-card-header">
+                <div class="ai-logo-placeholder">
+                    ${ia.imagen_logo 
+                        ? `<img src="${ia.imagen_logo}" alt="${ia.nombre}" onerror="this.parentElement.innerHTML='🤖'">`
+                        : (ia.categorias?.icono || '🤖')
+                    }
+                </div>
+                <div class="ai-rating">
+                    <span class="star-filled">★</span>
+                    <span>${rating.toFixed(1)}</span>
+                </div>
+            </div>
+            <h3 class="ai-name">${ia.nombre}</h3>
+            <p class="ai-description">${ia.descripcion ? ia.descripcion.substring(0, 80) + '...' : ''}</p>
+            <div class="ai-meta">
+                <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
+            </div>
+        </div>
+        <a href="${ia.url}" target="_blank" class="btn btn-primary ai-link-btn" onclick="event.stopPropagation()">Visitar IA</a>
+    `;
+
+    return card;
+}
+
+// Agregar al DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    configurarBusquedaGlobal();
 });

@@ -1970,3 +1970,262 @@ body:not(.auth-loaded) #headerUser {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
 }
+
+/* =============================================
+   PERFIL DE USUARIO
+   ============================================= */
+
+.perfil-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.perfil-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.perfil-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.perfil-nombre {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.perfil-email {
+    opacity: 0.8;
+    margin: 0 0 0.5rem 0;
+}
+
+.perfil-nivel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.2);
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    width: fit-content;
+}
+
+.nivel-badge {
+    font-size: 1.25rem;
+}
+
+.nivel-nombre {
+    font-weight: 600;
+}
+
+.perfil-stats {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.perfil-stat {
+    text-align: center;
+}
+
+.perfil-stat-valor {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.perfil-stat-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Tabs */
+.perfil-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0;
+}
+
+.perfil-tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+}
+
+.perfil-tab:hover {
+    color: #4f46e5;
+}
+
+.perfil-tab.active {
+    color: #4f46e5;
+    border-bottom-color: #4f46e5;
+    font-weight: 600;
+}
+
+/* Lista de IAs */
+.ias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ia-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ia-item-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1rem;
+}
+
+.ia-item-info p {
+    margin: 0 0 0.5rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.ia-item-estado {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.estado-aprobada {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.estado-pendiente {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.estado-rechazada {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.ia-item-stats {
+    display: flex;
+    gap: 1rem;
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Lista de reseñas en perfil */
+.resenas-lista-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.resena-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.resena-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.resena-item-header h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.resena-item p {
+    margin: 0 0 0.5rem 0;
+    color: #374151;
+}
+
+.resena-fecha {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .perfil-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .perfil-nivel {
+        margin: 0 auto;
+    }
+
+    .perfil-stats {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .ia-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.perfil-nombre-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.perfil-nombre-row .perfil-nombre {
+    margin: 0;
+}
+
+.btn-edit {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit:hover {
+    background: rgba(255,255,255,0.3);
+}

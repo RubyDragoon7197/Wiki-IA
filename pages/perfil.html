@@ -1,89 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Perfil</title>
-  <link rel="stylesheet" href="../css/styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil - Wiki IA</title>
+    <link rel="stylesheet" href="../css/styles.css" />
 </head>
 <body>
-  <header>
-      <div class="header-content">
-          <div class="header-left">
-              <div class="logo">Wiki IA</div>
-              <div class="search-container">
-                  <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                  </svg>
-                  <input type="text" class="search-input" placeholder="Buscar una IA">
-              </div>
-          </div>
-          <div class="header-buttons" id="headerButtons">
-              <button class="btn btn-secondary" onclick="abrirModal('loginModal')">Iniciar sesión</button>
-              <button class="btn btn-primary" onclick="abrirModal('registroModal')">Registrarse</button>
-          </div>
-          <div class="header-buttons header-user" id="headerUser" style="display: none;">
-              <span class="user-welcome">Hola, <strong id="userName">Usuario</strong></span>
-              <span class="user-points" id="userPoints">0 pts</span>
-              <button class="btn btn-primary" id="adminPanelBtn" onclick="window.location.href='../admin/dashboard.html'" style="display: none;">Panel Admin</button>
-              <button class="btn btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
-          </div>
-      </div>
-  </header>
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <a href="../index.html" class="logo">Wiki IA</a>
+            </div>
+            <div class="header-buttons" id="headerButtons">
+                <button class="btn btn-secondary" onclick="abrirModal('loginModal')">Iniciar sesión</button>
+                <button class="btn btn-primary" onclick="abrirModal('registroModal')">Registrarse</button>
+            </div>
+            <div class="header-buttons header-user" id="headerUser" style="display: none;">
+                <span class="user-welcome">Hola, <strong id="userName">Usuario</strong></span>
+                <span class="user-points" id="userPoints">0 pts</span>
+                <button class="btn btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
+        </div>
+    </header>
 
-  <main class="main-content">
-    <div class="container">
-      <nav class="breadcrumb">
-        <a href="../index.html">Inicio</a>
-        <span class="breadcrumb-sep">/</span>
-        <span>Perfil</span>
-      </nav>
-      <h1 class="title">Perfil</h1>
-      <p>Contenido de la categoría Perfil (placeholder).</p>
-      <a href="../index.html" class="btn btn-primary" style="display:inline-block;margin-top:1rem;">← Volver al inicio</a>
-    </div>
-  </main>
-  
-    <!-- Chatbot Button -->
-    <button class="chatbot-button" id="chatbotBtn">
-      <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-      </svg>
-    </button>
+    <main class="main-content">
+        <div class="container">
+            <!-- Estado sin login -->
+            <div class="empty-state" id="loginRequired" style="display: none;">
+                <div class="empty-icon">🔒</div>
+                <h3>Inicia sesión</h3>
+                <p>Necesitas una cuenta para ver tu perfil</p>
+                <button class="btn btn-primary" onclick="abrirModal('loginModal')">Iniciar Sesión</button>
+            </div>
 
-    <!-- Chatbot Window -->
-    <div class="chatbot-window" id="chatbotWindow">
-      <div class="chatbot-header">
-        <div class="chatbot-header-left">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-          </svg>
-          <span style="font-weight: 600;">Asistente IA</span>
-        </div>
-        <button class="chatbot-close" id="chatbotClose">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      <div class="chatbot-body" id="chatbotBody">
-        <div class="chat-message">
-          <p>¡Hola! ¿En qué puedo ayudarte hoy?</p>
-        </div>
-      </div>
-      <div class="chatbot-footer">
-        <div class="chat-input-container">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
-          <button class="chat-send" id="chatSend">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
+            <!-- Contenido del perfil -->
+            <div id="perfilContent" style="display: none;">
+                <!-- Tarjeta de perfil -->
+                <div class="perfil-card">
+                    <div class="perfil-avatar" id="perfilAvatar">US</div>
+                    <div class="perfil-info">
+    <div class="perfil-nombre-row">
+        <h1 class="perfil-nombre" id="perfilNombre">Usuario</h1>
+        <button class="btn-edit" onclick="abrirModalEditarPerfil()" title="Editar perfil">✏️</button>
     </div>
+    <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
+    <div class="perfil-nivel">
+        <span class="nivel-badge" id="perfilNivelBadge">🌱</span>
+        <span class="nivel-nombre" id="perfilNivelNombre">Novato</span>
+    </div>
+</div>
+
+                <!-- Tabs -->
+                <div class="perfil-tabs">
+                    <button class="perfil-tab active" data-tab="mis-ias" onclick="cambiarTab('mis-ias')">
+                        🤖 Mis IAs
+                    </button>
+                    <button class="perfil-tab" data-tab="mis-resenas" onclick="cambiarTab('mis-resenas')">
+                        📝 Mis Reseñas
+                    </button>
+                </div>
+
+                <!-- Contenido de tabs -->
+                <div class="perfil-tab-content" id="tab-mis-ias">
+                    <div class="loading-state" id="iasLoading">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando IAs...</p>
+                    </div>
+                    <div class="empty-state" id="iasEmpty" style="display: none;">
+                        <div class="empty-icon">📭</div>
+                        <h3>No has publicado IAs</h3>
+                        <p>¡Comparte una IA y gana 50 puntos!</p>
+                    </div>
+                    <div class="ias-lista" id="misIAsLista" style="display: none;"></div>
+                </div>
+
+                <div class="perfil-tab-content" id="tab-mis-resenas" style="display: none;">
+                    <div class="loading-state" id="resenasLoading">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando reseñas...</p>
+                    </div>
+                    <div class="empty-state" id="resenasEmpty" style="display: none;">
+                        <div class="empty-icon">📭</div>
+                        <h3>No has dejado reseñas</h3>
+                        <p>¡Deja una reseña y gana 10 puntos!</p>
+                    </div>
+                    <div class="resenas-lista-perfil" id="misResenasLista" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Login -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Iniciar Sesión</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('loginModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">Correo electrónico</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-error" id="loginError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="loginBtn">Iniciar Sesión</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿No tienes cuenta? <a href="#" onclick="cambiarModal('loginModal', 'registroModal')">Regístrate aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registro -->
+    <div class="modal-overlay" id="registroModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Crear Cuenta</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('registroModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="registroForm" onsubmit="handleRegistro(event)">
+                    <div class="form-group">
+                        <label for="registroUsername">Nombre de usuario</label>
+                        <input type="text" id="registroUsername" name="username" placeholder="usuario123" required minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroEmail">Correo electrónico</label>
+                        <input type="email" id="registroEmail" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPassword">Contraseña</label>
+                        <input type="password" id="registroPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registroPasswordConfirm">Confirmar contraseña</label>
+                        <input type="password" id="registroPasswordConfirm" name="passwordConfirm" placeholder="Repite tu contraseña" required>
+                    </div>
+                    <div class="form-error" id="registroError"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="registroBtn">Crear Cuenta</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p>¿Ya tienes cuenta? <a href="#" onclick="cambiarModal('registroModal', 'loginModal')">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal Editar Perfil -->
+<div class="modal-overlay" id="editarPerfilModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>Editar Perfil</h2>
+            <button class="modal-close-btn" onclick="cerrarModal('editarPerfilModal')">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="editarPerfilForm" onsubmit="guardarPerfil(event)">
+                <div class="form-group">
+                    <label for="editUsername">Nombre de usuario</label>
+                    <input type="text" id="editUsername" name="username" minlength="3" required>
+                </div>
+                <div class="form-group">
+                    <label for="editBiografia">Biografía (opcional)</label>
+                    <textarea id="editBiografia" name="biografia" rows="3" placeholder="Cuéntanos sobre ti..."></textarea>
+                </div>
+                <div class="form-error" id="editarPerfilError"></div>
+                <button type="submit" class="btn btn-primary btn-full" id="guardarPerfilBtn">
+                    Guardar Cambios
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
     <script src="../js/script.js"></script>
     <script src="../js/auth.js"></script>
+    <script src="../js/perfil.js"></script>
 </body>
 </html>

@@ -190,4 +190,90 @@ router.get('/:username/actividad', async (req, res) => {
     }
 });
 
+// GET /api/usuarios/:username/resenas - Obtener reseñas de un usuario
+router.get('/:username/resenas', async (req, res) => {
+    try {
+        const { username } = req.params;
+
+        // Obtener usuario
+        const { data: usuario } = await supabase
+            .from('usuarios')
+            .select('user_id')
+            .eq('username', username)
+            .single();
+
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        // Obtener reseñas del usuario
+        const { data, error } = await supabase
+            .from('resenas')
+            .select(`
+                *,
+                ias (ia_id, nombre, imagen_logo)
+            `)
+            .eq('usuario_id', usuario.user_id)
+            .eq('activo', true)
+            .order('fecha', { ascending: false });
+
+        if (error) throw error;
+
+        res.json(data || []);
+
+    } catch (error) {
+        console.error('Error al obtener reseñas del usuario:', error);
+        res.status(500).json({ error: 'Error al obtener reseñas' });
+    }
+});
+
+// PUT /api/usuarios/perfil - Actualizar perfil del usuario
+router.put('/perfil', verificarToken, async (req, res) => {
+    try {
+        const { username, biografia } = req.body;
+        const userId = req.usuario.user_id;
+
+        // Validar username
+        if (username) {
+            if (username.length < 3) {
+                return res.status(400).json({ error: 'El nombre debe tener al menos 3 caracteres' });
+            }
+
+            // Verificar que no exista otro usuario con ese nombre
+            const { data: existente } = await supabase
+                .from('usuarios')
+                .select('user_id')
+                .eq('username', username)
+                .neq('user_id', userId)
+                .single();
+
+            if (existente) {
+                return res.status(400).json({ error: 'Ese nombre de usuario ya está en uso' });
+            }
+        }
+
+        // Actualizar
+        const { data, error } = await supabase
+            .from('usuarios')
+            .update({
+                username: username || undefined,
+                biografia: biografia || undefined
+            })
+            .eq('user_id', userId)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.json({
+            mensaje: 'Perfil actualizado',
+            usuario: data
+        });
+
+    } catch (error) {
+        console.error('Error al actualizar perfil:', error);
+        res.status(500).json({ error: 'Error al actualizar perfil' });
+    }
+});
+
 module.exports = router;
