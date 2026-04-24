@@ -117,6 +117,16 @@ async function handleLogin(event) {
         
         // Cerrar modal y actualizar UI
         cerrarModal('loginModal');
+
+        // Si estamos en la página de perfil, recargar para mostrar el nuevo usuario
+        if (window.location.pathname.includes('perfil')) {
+            mostrarNotificacion(`¡Bienvenido, ${data.usuario.username}!`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+            return;
+        }
+
         actualizarHeaderUsuario();
 
         // Si es admin, redirigir al panel de administración
@@ -184,8 +194,18 @@ async function handleRegistro(event) {
         
         // Cerrar modal y actualizar UI
         cerrarModal('registroModal');
+
+        // Si estamos en la página de perfil, recargar
+        if (window.location.pathname.includes('perfil')) {
+            mostrarNotificacion(`¡Cuenta creada! Bienvenido, ${data.usuario.username}`, 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+            return;
+        }
+
         actualizarHeaderUsuario();
-        
+
         // Mostrar mensaje de bienvenida
         mostrarNotificacion(`¡Cuenta creada! Bienvenido, ${data.usuario.username}`, 'success');
         
@@ -202,11 +222,12 @@ async function handleRegistro(event) {
 function cerrarSesion() {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
-    actualizarHeaderUsuario();
     mostrarNotificacion('Sesión cerrada', 'info');
     
-    // Si estamos en una página que requiere autenticación, redirigir
-    // window.location.href = '/index.html';
+    // Redirigir a la página principal
+    setTimeout(() => {
+        window.location.href = '/index.html';
+    }, 500);
 }
 
 // =============================================

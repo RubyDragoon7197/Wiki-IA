@@ -19,7 +19,7 @@ async function cargarPerfil() {
     const usuario = obtenerUsuario();
 
     // Llenar datos básicos
-    document.getElementById('perfilAvatar').textContent = usuario.username.substring(0, 2).toUpperCase();
+    actualizarAvatarPerfil(usuario.avatar, usuario.username);
     document.getElementById('perfilNombre').textContent = usuario.username;
     document.getElementById('perfilEmail').textContent = usuario.email;
     document.getElementById('perfilPuntos').textContent = usuario.puntos_totales || 0;
@@ -191,7 +191,11 @@ function abrirModalEditarPerfil() {
 
     document.getElementById('editUsername').value = usuario.username;
     document.getElementById('editBiografia').value = usuario.biografia || '';
+    document.getElementById('editAvatar').value = usuario.avatar || '';
     document.getElementById('editarPerfilError').textContent = '';
+
+    // Actualizar preview
+    actualizarAvatarPreview(usuario.avatar, usuario.username);
 
     abrirModal('editarPerfilModal');
 }
@@ -202,6 +206,7 @@ async function guardarPerfil(event) {
 
     const username = document.getElementById('editUsername').value.trim();
     const biografia = document.getElementById('editBiografia').value.trim();
+    const avatar = document.getElementById('editAvatar').value.trim();
     const btn = document.getElementById('guardarPerfilBtn');
     const errorDiv = document.getElementById('editarPerfilError');
 
@@ -213,7 +218,7 @@ async function guardarPerfil(event) {
         const response = await fetch(`${API_URL}/usuarios/perfil`, {
             method: 'PUT',
             headers: obtenerHeaders(),
-            body: JSON.stringify({ username, biografia })
+            body: JSON.stringify({ username, biografia, avatar })
         });
 
         const data = await response.json();
@@ -226,11 +231,13 @@ async function guardarPerfil(event) {
         const usuario = obtenerUsuario();
         usuario.username = data.usuario.username;
         usuario.biografia = data.usuario.biografia;
+        usuario.avatar = data.usuario.avatar;
         localStorage.setItem('usuario', JSON.stringify(usuario));
 
         // Actualizar UI
+       // Actualizar UI
         document.getElementById('perfilNombre').textContent = usuario.username;
-        document.getElementById('perfilAvatar').textContent = usuario.username.substring(0, 2).toUpperCase();
+        actualizarAvatarPerfil(usuario.avatar, usuario.username);
         actualizarHeaderUsuario();
         
         // Actualizar biografía en UI
@@ -252,3 +259,47 @@ async function guardarPerfil(event) {
         btn.textContent = 'Guardar Cambios';
     }
 }
+
+// Actualizar preview del avatar en el modal
+function actualizarAvatarPreview(url, username) {
+    const previewText = document.getElementById('avatarPreviewText');
+    const previewImg = document.getElementById('avatarPreviewImg');
+
+    if (url && url.startsWith('http')) {
+        previewImg.src = url;
+        previewImg.style.display = 'block';
+        previewText.style.display = 'none';
+        
+        previewImg.onerror = () => {
+            previewImg.style.display = 'none';
+            previewText.style.display = 'block';
+            previewText.textContent = username.substring(0, 2).toUpperCase();
+        };
+    } else {
+        previewImg.style.display = 'none';
+        previewText.style.display = 'block';
+        previewText.textContent = username.substring(0, 2).toUpperCase();
+    }
+}
+
+// Actualizar avatar en el perfil
+function actualizarAvatarPerfil(url, username) {
+    const avatarEl = document.getElementById('perfilAvatar');
+    
+    if (url && url.startsWith('http')) {
+        avatarEl.innerHTML = `<img src="${url}" alt="${username}" onerror="this.parentElement.textContent='${username.substring(0, 2).toUpperCase()}'">`;
+    } else {
+        avatarEl.textContent = username.substring(0, 2).toUpperCase();
+    }
+}
+
+// Preview en tiempo real al escribir URL
+document.addEventListener('DOMContentLoaded', () => {
+    const avatarInput = document.getElementById('editAvatar');
+    if (avatarInput) {
+        avatarInput.addEventListener('input', (e) => {
+            const usuario = obtenerUsuario();
+            actualizarAvatarPreview(e.target.value, usuario?.username || 'US');
+        });
+    }
+});

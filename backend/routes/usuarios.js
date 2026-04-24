@@ -230,7 +230,7 @@ router.get('/:username/resenas', async (req, res) => {
 // PUT /api/usuarios/perfil - Actualizar perfil del usuario
 router.put('/perfil', verificarToken, async (req, res) => {
     try {
-        const { username, biografia } = req.body;
+        const { username, biografia, avatar } = req.body;
         const userId = req.usuario.user_id;
 
         // Validar username
@@ -252,13 +252,16 @@ router.put('/perfil', verificarToken, async (req, res) => {
             }
         }
 
+        // Construir objeto de actualización
+        const updateData = {};
+        if (username) updateData.username = username;
+        if (biografia !== undefined) updateData.biografia = biografia;
+        if (avatar !== undefined) updateData.avatar = avatar;
+
         // Actualizar
         const { data, error } = await supabase
             .from('usuarios')
-            .update({
-                username: username || undefined,
-                biografia: biografia || undefined
-            })
+            .update(updateData)
             .eq('user_id', userId)
             .select()
             .single();

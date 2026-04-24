@@ -114,11 +114,19 @@ async function cargarResenas(iaId) {
             const iniciales = (usuario.username || 'U').substring(0, 2).toUpperCase();
             const estrellas = '★'.repeat(resena.puntuacion) + '☆'.repeat(5 - resena.puntuacion);
 
+            // Determinar el contenido del avatar
+            let avatarContent;
+            if (usuario.avatar && usuario.avatar.startsWith('http')) {
+                avatarContent = `<img src="${usuario.avatar}" alt="${usuario.username}" onerror="this.parentElement.textContent='${iniciales}'">`;
+            } else {
+                avatarContent = iniciales;
+            }
+
             return `
                 <div class="resena-card">
                     <div class="resena-header">
                         <div class="resena-usuario">
-                            <div class="resena-avatar">${iniciales}</div>
+                            <div class="resena-avatar">${avatarContent}</div>
                             <div class="resena-usuario-info">
                                 <span class="resena-username">${usuario.username || 'Usuario'}</span>
                                 <span class="resena-fecha">${formatearFechaCorta(resena.fecha)}</span>
