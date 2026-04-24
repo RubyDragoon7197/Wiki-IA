@@ -42,18 +42,66 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         }
     }
 
-    function sendMessage() {
-        const message = chatInput.value.trim();
-        if (message) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message';
-            messageDiv.innerHTML = `<p><strong>Tú:</strong> ${message}</p>`;
-            chatbotBody.appendChild(messageDiv);
-            chatInput.value = '';
-            chatbotBody.scrollTop = chatbotBody.scrollHeight;
-            saveMessage(message, true);
-        }
+    async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    // Mostrar mensaje del usuario
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'chat-message user-message';
+    userMessageDiv.innerHTML = `<p><strong>Tú:</strong> ${message}</p>`;
+    chatbotBody.appendChild(userMessageDiv);
+    chatInput.value = '';
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+    saveMessage(message, true);
+
+    // Mostrar indicador de "escribiendo..."
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-message typing-indicator';
+    typingDiv.innerHTML = '<p>Escribiendo...</p>';
+    chatbotBody.appendChild(typingDiv);
+    chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+    try {
+        // Obtener historial para contexto
+        const history = localStorage.getItem('chatbot_history');
+        const historial = history ? JSON.parse(history) : [];
+
+        // Enviar al backend
+        const response = await fetch(`${API_URL}/chatbot`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                mensaje: message,
+                historial: historial.slice(-10) // Últimos 10 mensajes
+            })
+        });
+
+        const data = await response.json();
+
+        // Remover indicador de escribiendo
+        typingDiv.remove();
+
+        // Mostrar respuesta
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'chat-message';
+        botMessageDiv.innerHTML = `<p>${data.respuesta}</p>`;
+        chatbotBody.appendChild(botMessageDiv);
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        saveMessage(data.respuesta, false);
+
+    } catch (error) {
+        console.error('Error:', error);
+        typingDiv.remove();
+
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'chat-message';
+        errorDiv.innerHTML = '<p>Lo siento, hubo un error. Intenta de nuevo.</p>';
+        chatbotBody.appendChild(errorDiv);
     }
+}
 
     loadChatHistory();
     loadChatState();

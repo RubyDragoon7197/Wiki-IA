@@ -2229,3 +2229,15 @@ body:not(.auth-loaded) #headerUser {
 .btn-edit:hover {
     background: rgba(255,255,255,0.3);
 }
+
+.typing-indicator p {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.user-message {
+    background: var(--primary-light);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    margin-left: 1rem;
+}
