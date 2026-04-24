@@ -2229,3 +2229,16 @@ body:not(.auth-loaded) #headerUser {
 .btn-edit:hover {
     background: rgba(255,255,255,0.3);
 }
+
+.perfil-biografia {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    margin: 0.75rem 0;
+    font-style: italic;
+    max-width: 500px;
+    line-height: 1.4;
+}
+
+.perfil-biografia:empty {
+    display: none;
+}

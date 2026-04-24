@@ -43,6 +43,15 @@ async function cargarDatosCompletos(username) {
             document.getElementById('perfilNivelNombre').textContent = data.nivel_info.nombre || 'Novato';
         }
 
+        // Mostrar biografía
+        const biografiaEl = document.getElementById('perfilBiografia');
+        if (data.biografia) {
+            biografiaEl.textContent = `"${data.biografia}"`;
+            biografiaEl.style.display = 'block';
+        } else {
+            biografiaEl.style.display = 'none';
+        }
+
         // Actualizar puntos desde servidor
         document.getElementById('perfilPuntos').textContent = data.puntos_totales || 0;
         document.getElementById('perfilNivel').textContent = data.nivel || 1;
@@ -223,6 +232,15 @@ async function guardarPerfil(event) {
         document.getElementById('perfilNombre').textContent = usuario.username;
         document.getElementById('perfilAvatar').textContent = usuario.username.substring(0, 2).toUpperCase();
         actualizarHeaderUsuario();
+        
+        // Actualizar biografía en UI
+        const biografiaEl = document.getElementById('perfilBiografia');
+        if (usuario.biografia) {
+            biografiaEl.textContent = `"${usuario.biografia}"`;
+            biografiaEl.style.display = 'block';
+        } else {
+            biografiaEl.style.display = 'none';
+        }
 
         mostrarNotificacion('Perfil actualizado', 'success');
         cerrarModal('editarPerfilModal');
