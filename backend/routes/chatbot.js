@@ -1,5 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { GoogleGenAI } = require('@google/genai');
+
+// Inicializar el cliente de Gemini
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // POST /api/chatbot - Enviar mensaje al chatbot
 router.post('/', async (req, res) => {
@@ -23,7 +27,7 @@ Sé amable, conciso y útil. Responde en español.
 Si no sabes algo, admítelo honestamente.
 Mantén las respuestas cortas (2-3 oraciones máximo) a menos que el usuario pida más detalle.`;
 
-        // Construir el historial de conversación para Gemini
+        // Construir el historial de conversación
         let conversationHistory = '';
         if (historial && Array.isArray(historial)) {
             const historialReciente = historial.slice(-10);
@@ -43,32 +47,12 @@ Usuario: ${mensaje}
 Asistente:`;
 
         // Llamar a la API de Gemini
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: fullPrompt
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 500
-                }
-            })
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            contents: fullPrompt
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error de Gemini:', errorData);
-            throw new Error('Error al comunicarse con el asistente');
-        }
-
-        const data = await response.json();
-        const respuesta = data.candidates[0].content.parts[0].text;
+        const respuesta = response.text;
 
         res.json({ respuesta });
 
