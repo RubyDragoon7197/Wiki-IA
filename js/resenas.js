@@ -354,3 +354,27 @@ async function toggleFavoritoDetalle() {
         mostrarNotificacion('Error al actualizar favoritos', 'error');
     }
 }
+
+// Registrar uso y visitar IA
+async function visitarIA(url, iaId) {
+    try {
+        // Registrar el uso en el backend
+        await fetch(`${API_URL}/ias/${iaId}/uso`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        // Actualizar el contador en el modal si está abierto
+        const usosElement = document.getElementById('iaDetalleUsos');
+        if (usosElement && iaActual && iaActual.ia_id === iaId) {
+            const usosActuales = iaActual.total_usos || 0;
+            iaActual.total_usos = usosActuales + 1;
+            usosElement.textContent = formatearNumeroCorto(iaActual.total_usos);
+        }
+    } catch (error) {
+        console.error('Error al registrar uso:', error);
+    }
+    
+    // Abrir la URL en nueva pestaña
+    window.open(url, '_blank');
+}

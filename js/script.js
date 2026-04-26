@@ -273,7 +273,7 @@ class Pagination {
                     <span>📅 ${fecha.toLocaleDateString('es', {month: 'short', year: 'numeric'})}</span>
                 </div>
             </div>
-            <a href="${ia.url}" target="_blank" class="btn btn-primary ai-link-btn" onclick="event.stopPropagation()">Visitar IA</a>
+            <button class="btn btn-primary ai-link-btn" onclick="event.stopPropagation(); visitarIA('${ia.url}', ${ia.ia_id})">Visitar IA</button>
         `;
         
         return card;
@@ -539,7 +539,7 @@ function crearTarjetaBusqueda(ia) {
                 <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
             </div>
         </div>
-        <a href="${ia.url}" target="_blank" class="btn btn-primary ai-link-btn" onclick="event.stopPropagation()">Visitar IA</a>
+        <button class="btn btn-primary ai-link-btn" onclick="event.stopPropagation(); visitarIA('${ia.url}', ${ia.ia_id})">Visitar IA</button>
     `;
 
     return card;
