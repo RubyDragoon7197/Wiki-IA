@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Inicializar el cliente de Gemini
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+if (!process.env.GEMINI_API_KEY) {
+    console.error('❌ GEMINI_API_KEY no está definida en las variables de entorno');
+}
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // POST /api/chatbot - Enviar mensaje al chatbot
 router.post('/', async (req, res) => {
@@ -47,19 +50,19 @@ Usuario: ${mensaje}
 Asistente:`;
 
         // Llamar a la API de Gemini
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.0-flash',
-            contents: fullPrompt
-        });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const result = await model.generateContent(fullPrompt);
 
-        const respuesta = response.text;
+        const respuesta = result.response.text();
 
         res.json({ respuesta });
 
     } catch (error) {
-        console.error('Error en chatbot:', error);
+        console.error('Error en chatbot:', error.message);
+        console.error('Stack:', error.stack);
         res.status(500).json({ 
             error: 'Error al procesar tu mensaje',
+            detalles: error.message,
             respuesta: 'Lo siento, hubo un problema. ¿Puedes intentar de nuevo?'
         });
     }

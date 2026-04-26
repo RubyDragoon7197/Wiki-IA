@@ -10,17 +10,31 @@ const chatInput = document.getElementById('chatInput');
 const chatbotBody = document.getElementById('chatbotBody');
 
 if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chatbotBody) {
+    
+    // Escuchar clics en los enlaces generados por el bot
+    chatbotBody.addEventListener('click', (e) => {
+        const botLink = e.target.closest('.link-modal-bot');
+        if (botLink) {
+            e.preventDefault();
+            const idIA = botLink.getAttribute('data-id');
+            
+            if (typeof abrirDetalleIA === 'function') {
+                abrirDetalleIA(idIA);
+            }
+        }
+    });
+
     function loadChatHistory() {
-        const history = localStorage.getItem('chatbot_history');
+        const history = sessionStorage.getItem('chatbot_history');
         if (history) {
             const messages = JSON.parse(history);
             chatbotBody.innerHTML = '';
             messages.forEach(msg => {
                 const messageDiv = document.createElement('div');
-                messageDiv.className = 'chat-message';
+                messageDiv.className = `chat-message ${msg.isUser ? 'user-message' : ''}`;
                 messageDiv.innerHTML = msg.isUser 
                     ? `<p><strong>Tú:</strong> ${msg.text}</p>`
-                    : `<p>${msg.text}</p>`;
+                    : `<p>${msg.text}</p>`; 
                 chatbotBody.appendChild(messageDiv);
             });
             chatbotBody.scrollTop = chatbotBody.scrollHeight;
@@ -28,103 +42,83 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
     }
 
     function saveMessage(text, isUser = true) {
-        const history = localStorage.getItem('chatbot_history');
-        const messages = history ? JSON.parse(history) : [{text: '¡Hola! ¿En qué puedo ayudarte hoy?', isUser: false}];
+        const history = sessionStorage.getItem('chatbot_history');
+        const messages = history ? JSON.parse(history) : [{text: '¡Hola! Soy el asistente de Wiki-IA. ¿En qué puedo ayudarte?', isUser: false}];
         messages.push({text, isUser});
-        localStorage.setItem('chatbot_history', JSON.stringify(messages));
-    }
-
-    function loadChatState() {
-        const state = localStorage.getItem('chatbot_state');
-        if (state === 'open') {
-            chatbotWindow.classList.add('active');
-            chatbotBtn.style.display = 'none';
-        }
+        sessionStorage.setItem('chatbot_history', JSON.stringify(messages));
     }
 
     async function sendMessage() {
-    const message = chatInput.value.trim();
-    if (!message) return;
+        const message = chatInput.value.trim();
+        if (!message) return;
 
-    // Mostrar mensaje del usuario
-    const userMessageDiv = document.createElement('div');
-    userMessageDiv.className = 'chat-message user-message';
-    userMessageDiv.innerHTML = `<p><strong>Tú:</strong> ${message}</p>`;
-    chatbotBody.appendChild(userMessageDiv);
-    chatInput.value = '';
-    chatbotBody.scrollTop = chatbotBody.scrollHeight;
-    saveMessage(message, true);
-
-    // Mostrar indicador de "escribiendo..."
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'chat-message typing-indicator';
-    typingDiv.innerHTML = '<p>Escribiendo...</p>';
-    chatbotBody.appendChild(typingDiv);
-    chatbotBody.scrollTop = chatbotBody.scrollHeight;
-
-    try {
-        // Obtener historial para contexto
-        const history = localStorage.getItem('chatbot_history');
-        const historial = history ? JSON.parse(history) : [];
-
-        // Enviar al backend
-        const response = await fetch(`${API_URL}/chatbot`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                mensaje: message,
-                historial: historial.slice(-10) // Últimos 10 mensajes
-            })
-        });
-
-        const data = await response.json();
-
-        // Remover indicador de escribiendo
-        typingDiv.remove();
-
-        // Mostrar respuesta
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.className = 'chat-message';
-        botMessageDiv.innerHTML = `<p>${data.respuesta}</p>`;
-        chatbotBody.appendChild(botMessageDiv);
+        // Mostrar mensaje usuario
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.className = 'chat-message user-message';
+        userMessageDiv.innerHTML = `<p><strong>Tú:</strong> ${message}</p>`;
+        chatbotBody.appendChild(userMessageDiv);
+        chatInput.value = '';
         chatbotBody.scrollTop = chatbotBody.scrollHeight;
-        saveMessage(data.respuesta, false);
+        saveMessage(message, true);
 
-    } catch (error) {
-        console.error('Error:', error);
-        typingDiv.remove();
+        // Indicador de carga
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-message';
+        typingDiv.innerHTML = '<p><em>Escribiendo...</em></p>';
+        chatbotBody.appendChild(typingDiv);
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
 
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'chat-message';
-        errorDiv.innerHTML = '<p>Lo siento, hubo un error. Intenta de nuevo.</p>';
-        chatbotBody.appendChild(errorDiv);
+        try {
+            const response = await fetch(`${API_URL}/chatbot`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mensaje: message })
+            });
+
+            const data = await response.json();
+            typingDiv.remove();
+
+            const botMessageDiv = document.createElement('div');
+            botMessageDiv.className = 'chat-message';
+
+            // TRADUCTOR DE MARKDOWN A HTML
+            let textoFormateado = data.respuesta
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[([^\]]+)\]\s*\(javascript:abrirDetalleIA\(([^)]+)\)\)/g, 
+                    '<a href="#" class="link-modal-bot" data-id="$2" style="color: #007bff; text-decoration: underline; font-weight: bold; cursor: pointer;">$1</a>')
+                .replace(/\n/g, '<br>');
+
+            botMessageDiv.innerHTML = `<p>${textoFormateado}</p>`;
+            chatbotBody.appendChild(botMessageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+            saveMessage(textoFormateado, false);
+
+        } catch (error) {
+            console.error('Error:', error);
+            typingDiv.remove();
+        }
     }
-}
-
-    loadChatHistory();
-    loadChatState();
 
     chatbotBtn.addEventListener('click', () => {
         chatbotWindow.classList.add('active');
         chatbotBtn.style.display = 'none';
-        localStorage.setItem('chatbot_state', 'open');
+        sessionStorage.setItem('chatbot_state', 'open');
     });
 
     chatbotClose.addEventListener('click', () => {
         chatbotWindow.classList.remove('active');
         chatbotBtn.style.display = 'flex';
-        localStorage.setItem('chatbot_state', 'closed');
+        sessionStorage.setItem('chatbot_state', 'closed');
     });
 
     chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
+    loadChatHistory();
+    if (sessionStorage.getItem('chatbot_state') === 'open') {
+        chatbotWindow.classList.add('active');
+        chatbotBtn.style.display = 'none';
+    }
 }
 
 // =============================================================================
