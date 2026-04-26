@@ -92,6 +92,9 @@ router.post('/', verificarToken, async (req, res) => {
         // Actualizar calificación promedio de la IA
         await supabase.rpc('actualizar_calificacion_ia', { p_ia_id: ia_id });
 
+        // Verificar medallas
+        await supabase.rpc('verificar_y_otorgar_medallas', { p_usuario_id: parseInt(req.usuario.user_id) });
+
         res.status(201).json({
             mensaje: '¡Reseña publicada! +10 puntos',
             resena: nuevaResena

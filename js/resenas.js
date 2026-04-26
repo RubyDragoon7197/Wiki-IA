@@ -267,6 +267,8 @@ async function enviarResena() {
         }
 
         mostrarNotificacion('¡Reseña publicada! +10 puntos', 'success');
+        // Verificar si ganó medallas
+        verificarMedallasNuevas();
 
         // Actualizar puntos del usuario en localStorage
         const usuario = obtenerUsuario();
@@ -377,4 +379,24 @@ async function visitarIA(url, iaId) {
     
     // Abrir la URL en nueva pestaña
     window.open(url, '_blank');
+}
+
+// Verificar medallas nuevas
+async function verificarMedallasNuevas() {
+    try {
+        const response = await fetch(`${API_URL}/medallas/verificar`, {
+            method: 'POST',
+            headers: obtenerHeaders()
+        });
+        
+        const data = await response.json();
+        
+        if (data.nuevas && data.medallas.length > 0) {
+            setTimeout(() => {
+                mostrarNotificacion(`🏅 ¡Nueva medalla: ${data.medallas.join(', ')}!`, 'success');
+            }, 1500);
+        }
+    } catch (error) {
+        console.error('Error verificando medallas:', error);
+    }
 }

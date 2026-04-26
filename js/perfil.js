@@ -19,7 +19,7 @@ async function cargarPerfil() {
     const usuario = obtenerUsuario();
 
     // Llenar datos básicos
-    document.getElementById('perfilAvatar').textContent = usuario.username.substring(0, 2).toUpperCase();
+    actualizarAvatarPerfil(usuario.avatar, usuario.username);
     document.getElementById('perfilNombre').textContent = usuario.username;
     document.getElementById('perfilEmail').textContent = usuario.email;
     document.getElementById('perfilPuntos').textContent = usuario.puntos_totales || 0;
@@ -43,6 +43,18 @@ async function cargarDatosCompletos(username) {
             document.getElementById('perfilNivelNombre').textContent = data.nivel_info.nombre || 'Novato';
         }
 
+        // Mostrar biografía
+        const biografiaEl = document.getElementById('perfilBiografia');
+        if (biografiaEl && data.biografia) {
+            biografiaEl.textContent = `"${data.biografia}"`;
+            biografiaEl.style.display = 'block';
+        } else if (biografiaEl) {
+            biografiaEl.style.display = 'none';
+        }
+
+        // Mostrar avatar
+        actualizarAvatarPerfil(data.avatar, data.username);
+
         // Actualizar puntos desde servidor
         document.getElementById('perfilPuntos').textContent = data.puntos_totales || 0;
         document.getElementById('perfilNivel').textContent = data.nivel || 1;
@@ -50,6 +62,9 @@ async function cargarDatosCompletos(username) {
         // Cargar IAs y reseñas
         await cargarMisIAs();
         await cargarMisResenas();
+
+        // Cargar medallas
+        await cargarMedallas();
 
     } catch (error) {
         console.error('Error al cargar datos:', error);
@@ -142,13 +157,11 @@ async function cargarMisResenas() {
 
 // Cambiar tab
 function cambiarTab(tabId) {
-    // Actualizar botones
     document.querySelectorAll('.perfil-tab').forEach(tab => {
         tab.classList.remove('active');
     });
     document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
 
-    // Mostrar contenido
     document.querySelectorAll('.perfil-tab-content').forEach(content => {
         content.style.display = 'none';
     });
@@ -170,29 +183,70 @@ function formatearFecha(fecha) {
     });
 }
 
-// Inicializar
-document.addEventListener('DOMContentLoaded', () => {
-    cargarPerfil();
-});
+// =============================================
+// AVATAR - Mostrar y actualizar
+// =============================================
 
-// Abrir modal de editar perfil
+function actualizarAvatarPerfil(url, username) {
+    const avatarEl = document.getElementById('perfilAvatar');
+    if (!avatarEl) return;
+    
+    if (url && url.startsWith('http')) {
+        avatarEl.innerHTML = `<img src="${url}" alt="${username}" onerror="this.parentElement.innerHTML='${username.substring(0, 2).toUpperCase()}'">`;
+    } else {
+        avatarEl.innerHTML = '';
+        avatarEl.textContent = username.substring(0, 2).toUpperCase();
+    }
+}
+
+function actualizarAvatarPreview(url, username) {
+    const previewText = document.getElementById('avatarPreviewText');
+    const previewImg = document.getElementById('avatarPreviewImg');
+    
+    if (!previewText || !previewImg) return;
+
+    if (url && url.startsWith('http')) {
+        previewImg.src = url;
+        previewImg.style.display = 'block';
+        previewText.style.display = 'none';
+        
+        previewImg.onerror = () => {
+            previewImg.style.display = 'none';
+            previewText.style.display = 'block';
+            previewText.textContent = username.substring(0, 2).toUpperCase();
+        };
+    } else {
+        previewImg.style.display = 'none';
+        previewText.style.display = 'block';
+        previewText.textContent = username.substring(0, 2).toUpperCase();
+    }
+}
+
+// =============================================
+// MODAL EDITAR PERFIL
+// =============================================
+
 function abrirModalEditarPerfil() {
     const usuario = obtenerUsuario();
     if (!usuario) return;
 
     document.getElementById('editUsername').value = usuario.username;
     document.getElementById('editBiografia').value = usuario.biografia || '';
+    document.getElementById('editAvatar').value = usuario.avatar || '';
     document.getElementById('editarPerfilError').textContent = '';
+
+    // Actualizar preview del avatar
+    actualizarAvatarPreview(usuario.avatar, usuario.username);
 
     abrirModal('editarPerfilModal');
 }
 
-// Guardar perfil
 async function guardarPerfil(event) {
     event.preventDefault();
 
     const username = document.getElementById('editUsername').value.trim();
     const biografia = document.getElementById('editBiografia').value.trim();
+    const avatar = document.getElementById('editAvatar').value.trim();
     const btn = document.getElementById('guardarPerfilBtn');
     const errorDiv = document.getElementById('editarPerfilError');
 
@@ -204,7 +258,7 @@ async function guardarPerfil(event) {
         const response = await fetch(`${API_URL}/usuarios/perfil`, {
             method: 'PUT',
             headers: obtenerHeaders(),
-            body: JSON.stringify({ username, biografia })
+            body: JSON.stringify({ username, biografia, avatar })
         });
 
         const data = await response.json();
@@ -217,13 +271,25 @@ async function guardarPerfil(event) {
         const usuario = obtenerUsuario();
         usuario.username = data.usuario.username;
         usuario.biografia = data.usuario.biografia;
+        usuario.avatar = data.usuario.avatar;
         localStorage.setItem('usuario', JSON.stringify(usuario));
 
-        // Actualizar UI
+        // Actualizar UI - Nombre
         document.getElementById('perfilNombre').textContent = usuario.username;
-        document.getElementById('perfilAvatar').textContent = usuario.username.substring(0, 2).toUpperCase();
-        actualizarHeaderUsuario();
+        
+        // Actualizar UI - Avatar
+        actualizarAvatarPerfil(usuario.avatar, usuario.username);
 
+        // Actualizar UI - Biografía
+        const biografiaEl = document.getElementById('perfilBiografia');
+        if (biografiaEl && usuario.biografia) {
+            biografiaEl.textContent = `"${usuario.biografia}"`;
+            biografiaEl.style.display = 'block';
+        } else if (biografiaEl) {
+            biografiaEl.style.display = 'none';
+        }
+
+        actualizarHeaderUsuario();
         mostrarNotificacion('Perfil actualizado', 'success');
         cerrarModal('editarPerfilModal');
 
@@ -234,3 +300,76 @@ async function guardarPerfil(event) {
         btn.textContent = 'Guardar Cambios';
     }
 }
+
+// =============================================
+// MEDALLAS
+// =============================================
+
+async function cargarMedallas() {
+    const container = document.getElementById('medallasLista');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_URL}/medallas/mis-medallas`, {
+            headers: obtenerHeaders()
+        });
+
+        if (!response.ok) throw new Error('Error al cargar medallas');
+
+        const misMedallas = await response.json();
+
+        const todasResponse = await fetch(`${API_URL}/medallas`);
+        const todasMedallas = await todasResponse.json();
+
+        const medallasObtenidas = new Set(misMedallas.map(m => m.medallas?.medalla_id));
+
+        const iconos = {
+            1: '🌟',
+            2: '🤝',
+            3: '📝',
+            4: '🔍',
+            5: '🧠',
+            6: '👑'
+        };
+
+        if (todasMedallas.length === 0) {
+            container.innerHTML = '<p class="medallas-empty">No hay medallas disponibles</p>';
+            return;
+        }
+
+        container.innerHTML = todasMedallas.map(medalla => {
+            const obtenida = medallasObtenidas.has(medalla.medalla_id);
+            const miMedalla = misMedallas.find(m => m.medallas?.medalla_id === medalla.medalla_id);
+            const fecha = miMedalla ? new Date(miMedalla.fecha_obtencion).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }) : '';
+
+            return `
+                <div class="medalla-item ${obtenida ? '' : 'medalla-bloqueada'}" title="${medalla.descripcion}">
+                    <span class="medalla-icono">${iconos[medalla.medalla_id] || '🏅'}</span>
+                    <span class="medalla-nombre">${medalla.nombre}</span>
+                    ${obtenida ? `<span class="medalla-fecha">${fecha}</span>` : '<span class="medalla-fecha">🔒 Bloqueada</span>'}
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Error al cargar medallas:', error);
+        container.innerHTML = '<p class="medallas-empty">Error al cargar medallas</p>';
+    }
+}
+
+// =============================================
+// INICIALIZAR
+// =============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    cargarPerfil();
+    
+    // Preview en tiempo real al escribir URL del avatar
+    const avatarInput = document.getElementById('editAvatar');
+    if (avatarInput) {
+        avatarInput.addEventListener('input', (e) => {
+            const usuario = obtenerUsuario();
+            actualizarAvatarPreview(e.target.value, usuario?.username || 'US');
+        });
+    }
+});

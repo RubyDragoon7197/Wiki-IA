@@ -80,6 +80,9 @@ router.post('/', verificarToken, async (req, res) => {
 
         if (error) throw error;
 
+        // Verificar medallas
+        await supabase.rpc('verificar_y_otorgar_medallas', { p_usuario_id: req.usuario.user_id });
+
         res.status(201).json({
             mensaje: `${ia.nombre} agregada a favoritos`,
             favorito: data

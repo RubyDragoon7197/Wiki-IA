@@ -442,10 +442,8 @@ function configurarBusquedaGlobal() {
 
         timeout = setTimeout(async () => {
             if (termino.length < 2) {
-                // Si está en index.html, recargar todas las IAs
-                if (pagination) {
-                    pagination.loadPage(1);
-                }
+                // Restaurar vista normal
+                restaurarVistaNormal();
                 return;
             }
 
@@ -459,9 +457,30 @@ function configurarBusquedaGlobal() {
             const termino = e.target.value.trim();
             if (termino.length >= 2) {
                 await buscarIAs(termino);
+            } else {
+                restaurarVistaNormal();
             }
         }
     });
+}
+
+function restaurarVistaNormal() {
+    // Restaurar título
+    const mainTitle = document.getElementById('mainTitle');
+    if (mainTitle) {
+        mainTitle.textContent = 'IAs Más Usadas';
+    }
+
+    // Mostrar paginación
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (paginationContainer) {
+        paginationContainer.style.display = 'flex';
+    }
+
+    // Recargar IAs
+    if (pagination) {
+        pagination.loadPage(1);
+    }
 }
 
 async function buscarIAs(termino) {

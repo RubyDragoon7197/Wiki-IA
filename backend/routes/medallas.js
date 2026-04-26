@@ -100,4 +100,32 @@ router.get('/niveles', async (req, res) => {
     }
 });
 
+// POST /api/medallas/verificar - Verificar y otorgar medallas automáticamente
+router.post('/verificar', verificarToken, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .rpc('verificar_y_otorgar_medallas', {
+                p_usuario_id: req.usuario.user_id
+            });
+
+        if (error) throw error;
+
+        // data contiene las medallas nuevas otorgadas
+        if (data && data.length > 0) {
+            const medallasNuevas = data.map(m => m.medalla_nueva);
+            res.json({
+                nuevas: true,
+                medallas: medallasNuevas,
+                mensaje: `¡Felicidades! Has desbloqueado: ${medallasNuevas.join(', ')}`
+            });
+        } else {
+            res.json({ nuevas: false, medallas: [] });
+        }
+
+    } catch (error) {
+        console.error('Error al verificar medallas:', error);
+        res.status(500).json({ error: 'Error al verificar medallas' });
+    }
+});
+
 module.exports = router;
