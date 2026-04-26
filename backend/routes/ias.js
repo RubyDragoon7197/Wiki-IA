@@ -189,4 +189,21 @@ router.get('/buscar/:termino', async (req, res) => {
     }
 });
 
+// POST /api/ias/:id/uso - Registrar uso de una IA
+router.post('/:id/uso', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { error } = await supabase.rpc('incrementar_uso', { p_ia_id: parseInt(id) });
+
+        if (error) throw error;
+
+        res.json({ mensaje: 'Uso registrado' });
+
+    } catch (error) {
+        console.error('Error al registrar uso:', error);
+        res.status(500).json({ error: 'Error al registrar uso' });
+    }
+});
+
 module.exports = router;

@@ -36,37 +36,48 @@
 
             <!-- Contenido del perfil -->
             <div id="perfilContent" style="display: none;">
-                <!-- Tarjeta de perfil -->
-                <div class="perfil-card">
-                    <div class="perfil-avatar" id="perfilAvatar">US</div>
-                    <div class="perfil-info">
-    <div class="perfil-nombre-row">
-        <h1 class="perfil-nombre" id="perfilNombre">Usuario</h1>
-        <button class="btn-edit" onclick="abrirModalEditarPerfil()" title="Editar perfil">✏️</button>
-    </div>
-    <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
-    <p class="perfil-biografia" id="perfilBiografia"></p>
-    <div class="perfil-nivel">
-        <span class="nivel-badge" id="perfilNivelBadge">🌱</span>
-        <span class="nivel-nombre" id="perfilNivelNombre">Novato</span>
-        <span class="nivel-numero">Nivel <span id="perfilNivel">1</span></span>
-    </div>
-    <div class="perfil-stats">
-        <div class="stat-item">
-            <span class="stat-value" id="perfilPuntos">0</span>
-            <span class="stat-label">Puntos</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value" id="perfilIAs">0</span>
-            <span class="stat-label">IAs</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-value" id="perfilResenas">0</span>
-            <span class="stat-label">Reseñas</span>
-        </div>
-    </div>
+                        <!-- Tarjeta de perfil -->
+        <div class="perfil-card">
+            <div class="perfil-header">
+                <div class="perfil-avatar" id="perfilAvatar">US</div>
+                <div class="perfil-info">
+                    <div class="perfil-nombre-row">
+                        <h1 class="perfil-nombre" id="perfilNombre">Usuario</h1>
+                        <button class="btn-edit" onclick="abrirModalEditarPerfil()" title="Editar perfil">✏️</button>
+                    </div>
+                    <p class="perfil-email" id="perfilEmail">usuario@email.com</p>
+                    <p class="perfil-biografia" id="perfilBiografia"></p>
+                    <div class="perfil-nivel">
+                        <span class="nivel-badge" id="perfilNivelBadge">🌱</span>
+                        <span class="nivel-nombre" id="perfilNivelNombre">Novato</span>
+                        <span class="nivel-numero">Nivel <span id="perfilNivel">1</span></span>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="perfil-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="perfilPuntos">0</span>
+                    <span class="stat-label">Puntos</span>
                 </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="perfilIAs">0</span>
+                    <span class="stat-label">IAs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="perfilResenas">0</span>
+                    <span class="stat-label">Reseñas</span>
+                </div>
+            </div>
+
+            <!-- Medallas -->
+            <div class="perfil-medallas" id="perfilMedallas">
+                <h3 class="medallas-titulo">🏅 Mis Medallas</h3>
+                <div class="medallas-lista" id="medallasLista">
+                    <p class="medallas-loading">Cargando medallas...</p>
+                </div>
+            </div>
+        </div>
 
                 <!-- Tabs -->
                 <div class="perfil-tabs">
@@ -178,6 +189,7 @@
         </div>
     </div>
 
+<!-- Modal Editar Perfil -->
 <!-- Modal Editar Perfil -->
 <div class="modal-overlay" id="editarPerfilModal">
     <div class="modal-container">

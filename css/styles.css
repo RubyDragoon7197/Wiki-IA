@@ -1972,298 +1972,262 @@ body:not(.auth-loaded) #headerUser {
 }
 
 /* =============================================
-   PERFIL DE USUARIO
+   PERFIL DE USUARIO - REDISEÑADO
    ============================================= */
 
 .perfil-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 1rem;
-    padding: 2rem;
-    color: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+}
+
+.perfil-header {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 2rem;
     margin-bottom: 2rem;
 }
 
 .perfil-avatar {
-    width: 80px;
-    height: 80px;
-    background: rgba(255,255,255,0.2);
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.75rem;
+    font-size: 3rem;
     font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.perfil-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .perfil-info {
     flex: 1;
-    min-width: 200px;
-}
-
-.perfil-nombre {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem 0;
-}
-
-.perfil-email {
-    opacity: 0.8;
-    margin: 0 0 0.5rem 0;
-}
-
-.perfil-nivel {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255,255,255,0.2);
-    padding: 0.375rem 0.75rem;
-    border-radius: 9999px;
-    width: fit-content;
-}
-
-.nivel-badge {
-    font-size: 1.25rem;
-}
-
-.nivel-nombre {
-    font-weight: 600;
-}
-
-.perfil-stats {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.perfil-stat {
-    text-align: center;
-}
-
-.perfil-stat-valor {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 700;
-}
-
-.perfil-stat-label {
-    font-size: 0.75rem;
-    opacity: 0.8;
-}
-
-/* Tabs */
-.perfil-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 0;
-}
-
-.perfil-tab {
-    padding: 0.75rem 1.5rem;
-    background: none;
-    border: none;
-    font-size: 1rem;
-    color: #6b7280;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.2s;
-}
-
-.perfil-tab:hover {
-    color: #4f46e5;
-}
-
-.perfil-tab.active {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
-    font-weight: 600;
-}
-
-/* Lista de IAs */
-.ias-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.ia-item {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-}
-
-.ia-item-info h4 {
-    margin: 0 0 0.25rem 0;
-    font-size: 1rem;
-}
-
-.ia-item-info p {
-    margin: 0 0 0.5rem 0;
-    color: #6b7280;
-    font-size: 0.875rem;
-}
-
-.ia-item-estado {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.estado-aprobada {
-    background: #d1fae5;
-    color: #059669;
-}
-
-.estado-pendiente {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.estado-rechazada {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.ia-item-stats {
-    display: flex;
-    gap: 1rem;
-    color: #6b7280;
-    font-size: 0.875rem;
-}
-
-/* Lista de reseñas en perfil */
-.resenas-lista-perfil {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.resena-item {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-}
-
-.resena-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.resena-item-header h4 {
-    margin: 0;
-    font-size: 1rem;
-}
-
-.resena-item p {
-    margin: 0 0 0.5rem 0;
-    color: #374151;
-}
-
-.resena-fecha {
-    font-size: 0.75rem;
-    color: #9ca3af;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-    .perfil-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .perfil-nivel {
-        margin: 0 auto;
-    }
-
-    .perfil-stats {
-        width: 100%;
-        justify-content: space-around;
-    }
-
-    .ia-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+    padding-top: 0.5rem;
 }
 
 .perfil-nombre-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.25rem;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
-.perfil-nombre-row .perfil-nombre {
+.perfil-nombre {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
     margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn-edit {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.25);
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 0.875rem;
-    transition: background 0.2s;
+    font-size: 1.1rem;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .btn-edit:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+.perfil-email {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0 0 0.75rem 0;
 }
 
 .perfil-biografia {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.95rem;
-    margin: 0.75rem 0;
+    color: white;
+    font-size: 1rem;
     font-style: italic;
-    max-width: 500px;
-    line-height: 1.4;
+    margin: 1rem 0;
+    line-height: 1.5;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
 }
 
 .perfil-biografia:empty {
     display: none;
 }
 
-/* Avatar por URL */
+.perfil-nivel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.6rem 1.25rem;
+    border-radius: 25px;
+    margin-top: 0.75rem;
+    backdrop-filter: blur(10px);
+}
+
+.nivel-badge {
+    font-size: 1.5rem;
+}
+
+.nivel-nombre {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.nivel-numero {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    margin-left: 0.25rem;
+}
+
+.perfil-stats {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Medallas en perfil */
+.perfil-medallas {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.medallas-titulo {
+    font-size: 1.2rem;
+    margin-bottom: 1.25rem;
+    color: white;
+    font-weight: 600;
+}
+
+.medallas-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.medalla-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    min-width: 110px;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.medalla-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.medalla-icono {
+    font-size: 2.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.medalla-nombre {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: white;
+    text-align: center;
+}
+
+.medalla-fecha {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.35rem;
+}
+
+.medallas-empty, .medallas-loading {
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+.medalla-bloqueada {
+    opacity: 0.5;
+    filter: grayscale(0.8);
+}
+
+.medalla-bloqueada .medalla-nombre {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.medalla-bloqueada .medalla-fecha {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Avatar en modal de editar */
 .avatar-preview-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
     margin-top: 0.5rem;
 }
 
 .avatar-preview {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 600;
     color: white;
     overflow: hidden;
     flex-shrink: 0;
+    border: 3px solid rgba(102, 126, 234, 0.3);
 }
 
 .avatar-preview img {
@@ -2283,20 +2247,265 @@ body:not(.auth-loaded) #headerUser {
 .form-hint {
     color: var(--text-secondary);
     font-size: 0.8rem;
-    margin-top: 0.25rem;
+    margin-top: 0.35rem;
     display: block;
 }
 
-.perfil-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+/* Responsive */
+@media (max-width: 600px) {
+    .perfil-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .perfil-info {
+        padding-top: 0;
+    }
+    
+    .perfil-nombre-row {
+        justify-content: center;
+    }
+    
+    .perfil-biografia {
+        max-width: 100%;
+    }
+    
+    .perfil-stats {
+        gap: 2rem;
+    }
+    
+    .medallas-lista {
+        justify-content: center;
+    }
 }
 
-.resena-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+/* =============================================
+   TABS Y CONTENIDO DEL PERFIL
+   ============================================= */
+
+.perfil-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--bg-secondary);
+    padding: 0.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.perfil-tab {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.perfil-tab:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.perfil-tab.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.perfil-tab-content {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    min-height: 200px;
+}
+
+/* Lista de IAs del usuario */
+.ias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ia-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s;
+}
+
+.ia-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+}
+
+.ia-item-info h4 {
+    margin: 0 0 0.35rem 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.ia-item-info p {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.ia-item-estado {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.estado-aprobada {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.estado-pendiente {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.estado-rechazada {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.ia-item-stats {
+    display: flex;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Lista de reseñas del usuario */
+.resenas-lista-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.resena-item {
+    padding: 1.25rem;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.resena-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.resena-item-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.resena-estrellas {
+    color: #fbbf24;
+    font-size: 1rem;
+}
+
+.resena-item p {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.resena-fecha {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Estados vacíos y cargando */
+.loading-state,
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border-color);
+    border-top-color: #667eea;
     border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* Mejoras de profundidad y bordes */
+.perfil-tabs {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.perfil-tab-content {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ia-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.ia-item:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+}
+
+.resena-item {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s;
+}
+
+.resena-item:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+    transform: translateY(-2px);
+    border-color: #667eea;
+}
+
+.empty-state,
+.loading-state {
+    background: var(--bg-tertiary);
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
