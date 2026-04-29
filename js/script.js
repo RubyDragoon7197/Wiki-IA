@@ -568,3 +568,27 @@ function crearTarjetaBusqueda(ia) {
 document.addEventListener('DOMContentLoaded', () => {
     configurarBusquedaGlobal();
 });
+
+// Toggle menú móvil
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    
+    if (menu && overlay) {
+        menu.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+    }
+    
+    // Actualizar info del usuario en el menú móvil
+    const usuario = obtenerUsuario();
+    const mobileMenuUser = document.getElementById('mobileMenuUser');
+    
+    if (usuario && mobileMenuUser) {
+        mobileMenuUser.style.display = 'flex';
+        document.getElementById('mobileUserName').textContent = usuario.username;
+        document.getElementById('mobileUserPoints').textContent = `${usuario.puntos_totales || 0} pts`;
+    } else if (mobileMenuUser) {
+        mobileMenuUser.style.display = 'none';
+    }
+}

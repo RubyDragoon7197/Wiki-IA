@@ -11,14 +11,12 @@
     <header>
         <div class="header-content">
             <div class="header-left">
-                <div class="logo">Wiki IA</div>
-                <div class="search-container">
-                    <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
-                    <input type="text" class="search-input" placeholder="Buscar una IA">
-                </div>
-            </div>
+                </button>
+                <div class="logo">Wiki IA</div>
             
             <!-- Botones cuando NO está logueado -->
             <div class="header-buttons" id="headerButtons">
@@ -335,9 +333,6 @@
     </div>
 </div>
 
-<!-- MODAL PUBLICAR IA - Agregar antes del </body> -->
-<!-- ============================================= -->
-
 <!-- Modal de Publicar IA -->
 <div class="modal-overlay" id="publicarIAModal">
     <div class="modal-container modal-lg">
@@ -414,20 +409,6 @@
     </div>
 </div>
 
-
-<!-- ============================================= -->
-<!-- BOTÓN PUBLICAR IA - Agregar donde quieras    -->
-<!-- (puede ser en el sidebar o en el header)     -->
-<!-- ============================================= -->
-<!--
-<button class="btn btn-primary" onclick="abrirModalPublicarIA()">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-    </svg>
-    Publicar IA
-</button>
--->
-<!-- Modal Detalle IA -->
 <!-- Modal Detalle IA -->
 <div class="modal-overlay" id="iaDetalleModal">
     <div class="modal-container modal-xl">
@@ -537,5 +518,49 @@
     <script src="js/script.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/resenas.js"></script>
+
+    <!-- Menú Móvil -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+        <span class="mobile-menu-logo">Wiki IA</span>
+        <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+    <div class="mobile-menu-user" id="mobileMenuUser" style="display: none;">
+        <span class="mobile-user-name" id="mobileUserName">Usuario</span>
+        <span class="mobile-user-points" id="mobileUserPoints">0 pts</span>
+    </div>
+    <nav class="mobile-menu-nav">
+        <a href="#" class="mobile-nav-item" onclick="navegarConAuth('pages/favoritos.html', 'Favoritos'); toggleMobileMenu();">
+            <span class="mobile-nav-icon">♡</span>
+            <span>Favoritos</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="navegarConAuth('pages/perfil.html', 'Perfil'); toggleMobileMenu();">
+            <span class="mobile-nav-icon">👤</span>
+            <span>Perfil</span>
+        </a>
+        <button class="mobile-nav-publish" onclick="abrirModalPublicarIA(); toggleMobileMenu();">
+            <span>+</span> Publicar IA
+        </button>
+    </nav>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-categories">
+        <span class="mobile-categories-title">Categorías</span>
+        <a href="pages/diseno.html" class="mobile-category-link" onclick="toggleMobileMenu()">🎨 Diseño</a>
+        <a href="pages/programacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💻 Programación</a>
+        <a href="pages/educacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">📚 Educación</a>
+        <a href="pages/negocios-gestion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💼 Negocios</a>
+        <a href="pages/salud.html" class="mobile-category-link" onclick="toggleMobileMenu()">🏥 Salud</a>
+        <a href="pages/seguridad.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔒 Seguridad</a>
+        <a href="pages/ciencia.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔬 Ciencia</a>
+        <a href="pages/arte.html" class="mobile-category-link" onclick="toggleMobileMenu()">🎭 Arte</a>
+        <a href="pages/tecnologia.html" class="mobile-category-link" onclick="toggleMobileMenu()">🚀 Tecnología</a>
+    </div>
+</div>
+
 </body>
 </html>
