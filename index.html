@@ -205,7 +205,12 @@
                     </div>
                     <div class="form-group">
                         <label for="loginPassword">Contraseña</label>
-                        <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="loginPassword" name="password" placeholder="••••••••" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-error" id="loginError"></div>
                     <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
@@ -214,6 +219,7 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <p><a href="#" onclick="abrirModalOlvidePassword(event)">¿Olvidaste tu contraseña?</a></p>
                 <p>¿No tienes cuenta? <a href="#" onclick="cambiarModal('loginModal', 'registroModal')">Regístrate aquí</a></p>
             </div>
         </div>
@@ -242,11 +248,21 @@
                     </div>
                     <div class="form-group">
                         <label for="registroPassword">Contraseña</label>
-                        <input type="password" id="registroPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <div class="password-input-wrapper">
+                            <input type="password" id="registroPassword" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                            <button type="button" class="toggle-password" onclick="togglePassword('registroPassword', this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="registroPasswordConfirm">Confirmar contraseña</label>
-                        <input type="password" id="registroPasswordConfirm" name="passwordConfirm" placeholder="Repite tu contraseña" required>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="registroPasswordConfirm" name="passwordConfirm" placeholder="Repite tu contraseña" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword('registroPasswordConfirm', this)">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-error" id="registroError"></div>
                     <button type="submit" class="btn btn-primary btn-full" id="registroBtn">
@@ -256,6 +272,39 @@
             </div>
             <div class="modal-footer">
                 <p>¿Ya tienes cuenta? <a href="#" onclick="cambiarModal('registroModal', 'loginModal')">Inicia sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Olvidé Contraseña -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Recuperar Contraseña</h2>
+                <button class="modal-close-btn" onclick="cerrarModal('forgotPasswordModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
+                <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                    <div class="form-group">
+                        <label for="forgotEmail">Correo electrónico</label>
+                        <input type="email" id="forgotEmail" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-error" id="forgotError"></div>
+                    <div class="form-success" id="forgotSuccess"></div>
+                    <button type="submit" class="btn btn-primary btn-full" id="forgotBtn">
+                        Enviar Enlace
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <p><a href="#" onclick="cambiarModal('forgotPasswordModal', 'loginModal')">← Volver al login</a></p>
             </div>
         </div>
     </div>

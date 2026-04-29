@@ -124,3 +124,6 @@ app.listen(PORT, () => {
     console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
     console.log(`📚 API disponible en http://localhost:${PORT}/api`);
 });
+
+const passwordRoutes = require('./routes/password');
+app.use('/api/password', passwordRoutes);
