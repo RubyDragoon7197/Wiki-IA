@@ -1,3 +1,17 @@
+/* =============================================
+   VARIABLES CSS
+   ============================================= */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --text-primary: #ffffff;
+    --text-secondary: #a0aec0;
+    --border-color: #2d3748;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -1840,19 +1854,6 @@ body:not(.auth-loaded) #headerUser {
     gap: 0.75rem;
 }
 
-.resena-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-}
-
 .resena-usuario-info {
     display: flex;
     flex-direction: column;
@@ -1887,71 +1888,30 @@ body:not(.auth-loaded) #headerUser {
     font-style: italic;
 }
 
-.resena-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1rem;
-}
-
-.resena-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
-}
-
-.resena-usuario {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
+/* Reseñas - Avatar */
 .resena-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
     border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 600;
     color: white;
-    font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    text-transform: uppercase;
 }
 
-.resena-usuario-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.resena-username {
-    font-weight: 600;
-    color: #111827;
-    font-size: 0.9375rem;
-}
-
-.resena-fecha {
-    font-size: 0.75rem;
-    color: #9ca3af;
-}
-
-.resena-estrellas {
-    color: #fbbf24;
-    font-size: 1rem;
-    letter-spacing: -1px;
-}
-
-.resena-comentario {
-    color: #374151;
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.resena-sin-comentario {
-    color: #9ca3af;
-    font-style: italic;
+.resena-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .ai-card-actions-fav {
@@ -2396,27 +2356,29 @@ body:not(.auth-loaded) #headerUser {
 .resenas-lista-perfil {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .resena-item {
-    padding: 1.25rem;
+    padding: 1.5rem;
     background: var(--bg-tertiary);
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
 }
 
 .resena-item-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .resena-item-header h4 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
+    font-weight: 600;
 }
 
 .resena-estrellas {
@@ -2425,15 +2387,16 @@ body:not(.auth-loaded) #headerUser {
 }
 
 .resena-item p {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
-.resena-fecha {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.resena-item .resena-fecha {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-weight: 500;
 }
 
 /* Estados vacíos y cargando */
@@ -2867,7 +2830,9 @@ body:not(.auth-loaded) #headerUser {
     .resena-avatar {
         width: 35px;
         height: 35px;
-        font-size: 0.8rem;
+        min-width: 35px;
+        min-height: 35px;
+        font-size: 0.75rem;
     }
 
     .resena-username {
