@@ -3,6 +3,17 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const { verificarToken } = require('../middleware/auth');
 
+// Función para verificar si el email está verificado
+async function verificarEmailConfirmado(userId) {
+    const { data } = await supabase
+        .from('usuarios')
+        .select('email_verificado')
+        .eq('user_id', userId)
+        .single();
+    
+    return data?.email_verificado === true;
+}
+
 // GET /api/ias - Obtener todas las IAs aprobadas
 router.get('/', async (req, res) => {
     try {
@@ -92,9 +103,18 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/ias - Publicar nueva IA (requiere autenticación)
+// POST /api/ias - Publicar nueva IA (requiere autenticación y email verificado)
 router.post('/', verificarToken, async (req, res) => {
     try {
+        // Verificar email
+        const emailVerificado = await verificarEmailConfirmado(req.usuario.user_id);
+        if (!emailVerificado) {
+            return res.status(403).json({ 
+                error: 'Debes verificar tu email para publicar IAs',
+                codigo: 'EMAIL_NO_VERIFICADO'
+            });
+        }
+
         const { nombre, descripcion, url, categoria_id, imagen_logo } = req.body;
 
         // Validaciones

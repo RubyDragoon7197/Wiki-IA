@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Email - Wiki IA</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .verificar-card {
+            max-width: 450px;
+            width: 90%;
+            background: #1e1e2e;
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .verificar-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .verificar-card h1 {
+            color: white;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .verificar-card p {
+            color: #a0aec0;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .verificar-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #333;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .verificar-success {
+            display: none;
+        }
+
+        .verificar-success .verificar-icon {
+            color: #10b981;
+        }
+
+        .verificar-error {
+            display: none;
+        }
+
+        .verificar-error .verificar-icon {
+            color: #ef4444;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Estado: Cargando -->
+    <div class="verificar-card" id="loadingState">
+        <div class="verificar-loading">
+            <div class="spinner"></div>
+            <h1>Verificando tu email...</h1>
+            <p>Por favor espera un momento.</p>
+        </div>
+    </div>
+
+    <!-- Estado: Éxito -->
+    <div class="verificar-card verificar-success" id="successState">
+        <div class="verificar-icon">✅</div>
+        <h1>¡Email verificado!</h1>
+        <p>Tu cuenta ha sido verificada correctamente. Ya puedes disfrutar de todas las funciones de Wiki IA.</p>
+        <a href="../index.html" class="btn btn-primary">Ir al inicio</a>
+    </div>
+
+    <!-- Estado: Error -->
+    <div class="verificar-card verificar-error" id="errorState">
+        <div class="verificar-icon">❌</div>
+        <h1>Error de verificación</h1>
+        <p class="error-message" id="errorMessage">El enlace es inválido o ha expirado.</p>
+        <p>Si el enlace expiró, puedes solicitar uno nuevo desde tu perfil.</p>
+        <a href="../index.html" class="btn btn-primary">Ir al inicio</a>
+    </div>
+
+    <!-- Estado: Ya verificado -->
+    <div class="verificar-card verificar-success" id="alreadyVerifiedState" style="display: none;">
+        <div class="verificar-icon">✅</div>
+        <h1>Ya estás verificado</h1>
+        <p>Tu email ya había sido verificado anteriormente. ¡Disfruta de Wiki IA!</p>
+        <a href="../index.html" class="btn btn-primary">Ir al inicio</a>
+    </div>
+
+    <script>
+        // Detectar API URL
+        const API_URL = window.location.hostname.includes('github.dev') 
+            ? window.location.origin.replace('-5500', '-3000') + '/api'
+            : 'http://localhost:3000/api';
+
+        async function verificarEmail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            const loadingState = document.getElementById('loadingState');
+            const successState = document.getElementById('successState');
+            const errorState = document.getElementById('errorState');
+            const alreadyVerifiedState = document.getElementById('alreadyVerifiedState');
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (!token) {
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                errorMessage.textContent = 'No se encontró el token de verificación.';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/auth/verificar-email/${token}`);
+                const data = await response.json();
+
+                loadingState.style.display = 'none';
+
+                if (response.ok) {
+                    if (data.ya_verificado) {
+                        alreadyVerifiedState.style.display = 'block';
+                    } else {
+                        successState.style.display = 'block';
+                        
+                        // Actualizar localStorage si el usuario está logueado
+                        const usuarioGuardado = localStorage.getItem('usuario');
+                        if (usuarioGuardado) {
+                            const usuario = JSON.parse(usuarioGuardado);
+                            usuario.email_verificado = true;
+                            localStorage.setItem('usuario', JSON.stringify(usuario));
+                        }
+                    }
+                } else {
+                    errorState.style.display = 'block';
+                    errorMessage.textContent = data.error || 'Error al verificar el email.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingState.style.display = 'none';
+                errorState.style.display = 'block';
+                errorMessage.textContent = 'Error de conexión. Intenta de nuevo.';
+            }
+        }
+
+        // Ejecutar al cargar la página
+        verificarEmail();
+    </script>
+</body>
+</html>

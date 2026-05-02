@@ -3,6 +3,17 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const { verificarToken } = require('../middleware/auth');
 
+// Función para verificar si el email está verificado
+async function verificarEmailConfirmado(userId) {
+    const { data } = await supabase
+        .from('usuarios')
+        .select('email_verificado')
+        .eq('user_id', userId)
+        .single();
+    
+    return data?.email_verificado === true;
+}
+
 // GET /api/favoritos - Obtener favoritos del usuario
 router.get('/', verificarToken, async (req, res) => {
     try {
@@ -35,9 +46,18 @@ router.get('/', verificarToken, async (req, res) => {
     }
 });
 
-// POST /api/favoritos - Agregar a favoritos
+// POST /api/favoritos - Agregar a favoritos (requiere email verificado)
 router.post('/', verificarToken, async (req, res) => {
     try {
+        // Verificar email
+        const emailVerificado = await verificarEmailConfirmado(req.usuario.user_id);
+        if (!emailVerificado) {
+            return res.status(403).json({ 
+                error: 'Debes verificar tu email para agregar favoritos',
+                codigo: 'EMAIL_NO_VERIFICADO'
+            });
+        }
+
         const { ia_id } = req.body;
 
         if (!ia_id) {

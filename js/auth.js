@@ -21,16 +21,13 @@ let API_URL = 'http://localhost:3000/api';
 
 // Detectar si estamos en Codespaces y ajustar la URL
 if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
-    // Extraer la base URL de Codespaces y cambiar al puerto 3000
     const currentUrl = window.location.origin;
     
-    // Si la URL contiene un puerto específico (5500, 5501, etc), reemplazarlo por 3000
     if (currentUrl.match(/-\d{4,5}\.app\.github\.dev/)) {
         API_URL = currentUrl.replace(/-\d{4,5}\.app\.github\.dev/, '-3000.app.github.dev') + '/api';
     } else {
-        // Si no tiene puerto en la URL, agregar -3000
         const hostname = window.location.hostname;
-        const baseHostname = hostname.split('.')[0]; // obtener la parte antes del primer punto
+        const baseHostname = hostname.split('.')[0];
         API_URL = `https://${baseHostname}-3000.app.github.dev/api`;
     }
     console.log('🌐 Detectado ambiente Codespaces. API URL:', API_URL);
@@ -40,23 +37,20 @@ if (window.location.hostname.includes('github.dev') || window.location.hostname.
 // FUNCIONES DE MODAL
 // =============================================
 
-// Abrir modal
 function abrirModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Evitar scroll del body
+        document.body.style.overflow = 'hidden';
     }
 }
 
-// Cerrar modal
 function cerrarModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('active');
-        document.body.style.overflow = ''; // Restaurar scroll
+        document.body.style.overflow = '';
         
-        // Limpiar formularios y errores
         const form = modal.querySelector('form');
         if (form) form.reset();
         
@@ -68,20 +62,17 @@ function cerrarModal(modalId) {
     }
 }
 
-// Cambiar de un modal a otro
 function cambiarModal(cerrar, abrir) {
     cerrarModal(cerrar);
     setTimeout(() => abrirModal(abrir), 200);
 }
 
-// Cerrar modal al hacer clic fuera
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-overlay')) {
         cerrarModal(e.target.id);
     }
 });
 
-// Cerrar modal con tecla Escape
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const modalActivo = document.querySelector('.modal-overlay.active');
@@ -95,7 +86,6 @@ document.addEventListener('keydown', (e) => {
 // FUNCIONES DE AUTENTICACIÓN
 // =============================================
 
-// Manejar Login
 async function handleLogin(event) {
     event.preventDefault();
     
@@ -106,7 +96,6 @@ async function handleLogin(event) {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
     
-    // Mostrar loading
     btn.classList.add('btn-loading');
     btn.disabled = true;
     errorDiv.classList.remove('active');
@@ -114,9 +103,7 @@ async function handleLogin(event) {
     try {
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
         });
         
@@ -126,25 +113,20 @@ async function handleLogin(event) {
             throw new Error(data.error || 'Error al iniciar sesión');
         }
         
-        // Guardar token y datos del usuario
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         
-        // Cerrar modal y actualizar UI
         cerrarModal('loginModal');
 
-        // Si estamos en la página de perfil, recargar para mostrar el nuevo usuario
         if (window.location.pathname.includes('perfil')) {
             mostrarNotificacion(`¡Bienvenido, ${data.usuario.username}!`, 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            setTimeout(() => window.location.reload(), 500);
             return;
         }
 
         actualizarHeaderUsuario();
+        mostrarBannerVerificacion();
 
-        // Si es admin, redirigir al panel de administración
         if (data.usuario.rol === 'admin') {
             mostrarNotificacion(`¡Bienvenido, Admin ${data.usuario.username}!`, 'success');
             setTimeout(() => {
@@ -163,7 +145,6 @@ async function handleLogin(event) {
     }
 }
 
-// Manejar Registro
 async function handleRegistro(event) {
     event.preventDefault();
     
@@ -176,14 +157,12 @@ async function handleRegistro(event) {
     const password = document.getElementById('registroPassword').value;
     const passwordConfirm = document.getElementById('registroPasswordConfirm').value;
     
-    // Validar contraseñas
     if (password !== passwordConfirm) {
         errorDiv.textContent = 'Las contraseñas no coinciden';
         errorDiv.classList.add('active');
         return;
     }
     
-    // Mostrar loading
     btn.classList.add('btn-loading');
     btn.disabled = true;
     errorDiv.classList.remove('active');
@@ -191,9 +170,7 @@ async function handleRegistro(event) {
     try {
         const response = await fetch(`${API_URL}/auth/registro`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, email, password })
         });
         
@@ -203,26 +180,21 @@ async function handleRegistro(event) {
             throw new Error(data.error || 'Error al registrarse');
         }
         
-        // Guardar token y datos del usuario
         localStorage.setItem('token', data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         
-        // Cerrar modal y actualizar UI
         cerrarModal('registroModal');
 
-        // Si estamos en la página de perfil, recargar
         if (window.location.pathname.includes('perfil')) {
-            mostrarNotificacion(`¡Cuenta creada! Bienvenido, ${data.usuario.username}`, 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            mostrarNotificacion(`¡Cuenta creada! Revisa tu email para verificar tu cuenta.`, 'success');
+            setTimeout(() => window.location.reload(), 500);
             return;
         }
 
         actualizarHeaderUsuario();
+        mostrarBannerVerificacion();
 
-        // Mostrar mensaje de bienvenida
-        mostrarNotificacion(`¡Cuenta creada! Bienvenido, ${data.usuario.username}`, 'success');
+        mostrarNotificacion(`¡Cuenta creada! Revisa tu email para verificar tu cuenta.`, 'success');
         
     } catch (error) {
         errorDiv.textContent = error.message;
@@ -233,16 +205,130 @@ async function handleRegistro(event) {
     }
 }
 
-// Cerrar Sesión
 function cerrarSesion() {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
     mostrarNotificacion('Sesión cerrada', 'info');
     
-    // Redirigir a la página principal
+    // Remover banner de verificación si existe
+    const banner = document.getElementById('bannerVerificacion');
+    if (banner) banner.remove();
+    
     setTimeout(() => {
         window.location.href = '/index.html';
     }, 500);
+}
+
+// =============================================
+// VERIFICACIÓN DE EMAIL
+// =============================================
+
+// Verificar si el email está verificado
+function emailVerificado() {
+    const usuario = obtenerUsuario();
+    return usuario && usuario.email_verificado === true;
+}
+
+// Mostrar banner de verificación si no está verificado
+function mostrarBannerVerificacion() {
+    // Remover banner existente si hay
+    const bannerExistente = document.getElementById('bannerVerificacion');
+    if (bannerExistente) bannerExistente.remove();
+    
+    const usuario = obtenerUsuario();
+    
+    // Solo mostrar si está logueado y NO verificado
+    if (!usuario || usuario.email_verificado) return;
+    
+    const banner = document.createElement('div');
+    banner.id = 'bannerVerificacion';
+    banner.className = 'banner-verificacion';
+    banner.innerHTML = `
+        <div class="banner-contenido">
+            <span class="banner-icono">✉️</span>
+            <span class="banner-texto">
+                <strong>Verifica tu email</strong> para publicar IAs, dejar reseñas y guardar favoritos.
+            </span>
+            <button class="banner-btn" onclick="reenviarVerificacion()">Reenviar email</button>
+            <button class="banner-cerrar" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+    
+    // Insertar después del header
+    const header = document.querySelector('header');
+    if (header) {
+        header.insertAdjacentElement('afterend', banner);
+    } else {
+        document.body.insertAdjacentElement('afterbegin', banner);
+    }
+}
+
+// Reenviar email de verificación
+async function reenviarVerificacion() {
+    try {
+        const response = await fetch(`${API_URL}/auth/reenviar-verificacion`, {
+            method: 'POST',
+            headers: obtenerHeaders()
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            mostrarNotificacion('📧 Email de verificación enviado. Revisa tu bandeja de entrada.', 'success');
+        } else {
+            mostrarNotificacion(data.error || 'Error al enviar email', 'error');
+        }
+    } catch (error) {
+        mostrarNotificacion('Error de conexión', 'error');
+    }
+}
+
+// Mostrar modal cuando se intenta una acción sin verificar
+function mostrarModalEmailNoVerificado(accion) {
+    // Crear modal si no existe
+    let modal = document.getElementById('emailNoVerificadoModal');
+    
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'emailNoVerificadoModal';
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h2>✉️ Verifica tu email</h2>
+                    <button class="modal-close-btn" onclick="cerrarModal('emailNoVerificadoModal')">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">📧</div>
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Verificación requerida</h3>
+                    <p id="emailNoVerificadoMensaje" style="color: var(--text-secondary); margin-bottom: 1.5rem;"></p>
+                    <button class="btn btn-primary" onclick="reenviarVerificacion(); cerrarModal('emailNoVerificadoModal');">
+                        Reenviar email de verificación
+                    </button>
+                    <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Revisa tu bandeja de entrada y spam.
+                    </p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Personalizar mensaje según la acción
+    const mensajes = {
+        'publicar': 'Para publicar IAs necesitas verificar tu email primero.',
+        'resena': 'Para dejar reseñas necesitas verificar tu email primero.',
+        'favorito': 'Para guardar favoritos necesitas verificar tu email primero.'
+    };
+    
+    document.getElementById('emailNoVerificadoMensaje').textContent = 
+        mensajes[accion] || 'Para realizar esta acción necesitas verificar tu email.';
+    
+    abrirModal('emailNoVerificadoModal');
 }
 
 // =============================================
@@ -256,19 +342,16 @@ function actualizarHeaderUsuario() {
     const usuario = obtenerUsuario();
     
     if (usuario && headerButtons && headerUser) {
-        // Usuario logueado
         headerButtons.style.display = 'none';
         headerUser.style.display = 'flex';
         
         document.getElementById('userName').textContent = usuario.username;
         document.getElementById('userPoints').textContent = `${usuario.puntos_totales || 0} pts`;
         
-        // Mostrar botón de Panel Admin solo si es admin
         if (adminPanelBtn) {
             adminPanelBtn.style.display = usuario.rol === 'admin' ? 'inline-block' : 'none';
         }
     } else if (headerButtons && headerUser) {
-        // Usuario no logueado
         headerButtons.style.display = 'flex';
         headerUser.style.display = 'none';
         if (adminPanelBtn) {
@@ -276,7 +359,6 @@ function actualizarHeaderUsuario() {
         }
     }
     
-    // Marcar que la autenticación ya fue procesada para mostrar el header
     document.body.classList.add('auth-loaded');
 }
 
@@ -284,45 +366,34 @@ function actualizarHeaderUsuario() {
 // UTILIDADES
 // =============================================
 
-// Obtener token guardado
 function obtenerToken() {
     return localStorage.getItem('token');
 }
 
-// Obtener usuario guardado
 function obtenerUsuario() {
     const usuario = localStorage.getItem('usuario');
     return usuario ? JSON.parse(usuario) : null;
 }
 
-// Verificar si está autenticado
 function estaAutenticado() {
     return !!obtenerToken();
 }
 
-// Verificar si es admin
 function esAdmin() {
     const usuario = obtenerUsuario();
     return usuario && usuario.rol === 'admin';
 }
 
-// Headers para peticiones autenticadas
 function obtenerHeaders() {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-    
+    const headers = { 'Content-Type': 'application/json' };
     const token = obtenerToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
-    
     return headers;
 }
 
-// Mostrar notificación
 function mostrarNotificacion(mensaje, tipo = 'info') {
-    // Crear elemento de notificación
     const notificacion = document.createElement('div');
     notificacion.className = `notificacion notificacion-${tipo}`;
     notificacion.innerHTML = `
@@ -330,13 +401,9 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
         <button onclick="this.parentElement.remove()">×</button>
     `;
     
-    // Agregar al body
     document.body.appendChild(notificacion);
-    
-    // Mostrar con animación
     setTimeout(() => notificacion.classList.add('active'), 10);
     
-    // Remover después de 3 segundos
     setTimeout(() => {
         notificacion.classList.remove('active');
         setTimeout(() => notificacion.remove(), 300);
@@ -348,33 +415,27 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
 // =============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Verificar estado de sesión al cargar la página
     actualizarHeaderUsuario();
+    mostrarBannerVerificacion();
 });
 
 // =============================================
-// PUBLICAR IA - Agregar esto al final de auth.js
+// NAVEGACIÓN CON AUTENTICACIÓN
 // =============================================
 
-// NAVEGACI\u00d3N CON AUTENTICACI\u00d3N - Verificar antes de navegar
-// =============================================
 function navegarConAuth(url, seccion) {
     if (estaAutenticado()) {
-        // Usuario logueado - navegar normalmente
         window.location.href = url;
     } else {
-        // Usuario no logueado - mostrar modal de autenticaci\u00f3n
         mostrarModalAuthRequerida(seccion);
     }
 }
 
-// Mostrar modal gen\u00e9rico de autenticaci\u00f3n requerida
 function mostrarModalAuthRequerida(seccion) {
     const modal = document.getElementById('authRequiredModal');
     const title = document.getElementById('authModalTitle');
     const message = document.getElementById('authModalMessage');
     
-    // Personalizar mensaje seg\u00fan la secci\u00f3n
     const mensajes = {
         'Favoritos': {
             titulo: 'Accede a tus Favoritos',
@@ -387,8 +448,8 @@ function mostrarModalAuthRequerida(seccion) {
     };
     
     const info = mensajes[seccion] || {
-        titulo: 'Autenticaci\u00f3n Requerida',
-        mensaje: 'Necesitas una cuenta para acceder a esta secci\u00f3n.'
+        titulo: 'Autenticación Requerida',
+        mensaje: 'Necesitas una cuenta para acceder a esta sección.'
     };
     
     title.textContent = info.titulo;
@@ -397,19 +458,20 @@ function mostrarModalAuthRequerida(seccion) {
     abrirModal('authRequiredModal');
 }
 
-// Abrir modal de publicar IA
+// =============================================
+// PUBLICAR IA
+// =============================================
+
 function abrirModalPublicarIA() {
     const modal = document.getElementById('publicarIAModal');
     const authMessage = document.getElementById('authRequiredMessage');
     const form = document.getElementById('publicarIAForm');
     
     if (estaAutenticado()) {
-        // Usuario logueado - mostrar formulario
         authMessage.style.display = 'none';
         form.style.display = 'block';
         cargarCategoriasSelect();
     } else {
-        // Usuario no logueado - mostrar mensaje
         authMessage.style.display = 'block';
         form.style.display = 'none';
     }
@@ -417,11 +479,8 @@ function abrirModalPublicarIA() {
     abrirModal('publicarIAModal');
 }
 
-// Cargar categorías en el select
 async function cargarCategoriasSelect() {
     const select = document.getElementById('iaCategoria');
-    
-    // Evitar cargar si ya tiene opciones
     if (select.options.length > 1) return;
     
     try {
@@ -439,7 +498,6 @@ async function cargarCategoriasSelect() {
     }
 }
 
-// Manejar publicación de IA
 async function handlePublicarIA(event) {
     event.preventDefault();
     
@@ -453,14 +511,12 @@ async function handlePublicarIA(event) {
     const descripcion = document.getElementById('iaDescripcion').value.trim();
     const imagen_logo = document.getElementById('iaImagen').value.trim();
     
-    // Validaciones
     if (descripcion.length < 50) {
         errorDiv.textContent = 'La descripción debe tener al menos 50 caracteres';
         errorDiv.classList.add('active');
         return;
     }
     
-    // Mostrar loading
     btn.classList.add('btn-loading');
     btn.disabled = true;
     errorDiv.classList.remove('active');
@@ -481,14 +537,17 @@ async function handlePublicarIA(event) {
         const data = await response.json();
         
         if (!response.ok) {
+            // Verificar si es error de email no verificado
+            if (data.codigo === 'EMAIL_NO_VERIFICADO') {
+                cerrarModal('publicarIAModal');
+                mostrarModalEmailNoVerificado('publicar');
+                return;
+            }
             throw new Error(data.error || 'Error al publicar IA');
         }
         
-        // Cerrar modal y limpiar formulario
         cerrarModal('publicarIAModal');
         form.reset();
-        
-        // Mostrar mensaje de éxito
         mostrarNotificacion('¡IA enviada para revisión! Recibirás 50 puntos cuando sea aprobada.', 'success');
         
     } catch (error) {
@@ -500,14 +559,16 @@ async function handlePublicarIA(event) {
     }
 }
 
-// Abrir modal olvidé contraseña
+// =============================================
+// RECUPERAR CONTRASEÑA
+// =============================================
+
 function abrirModalOlvidePassword(event) {
     event.preventDefault();
     cerrarModal('loginModal');
     abrirModal('forgotPasswordModal');
 }
 
-// Manejar solicitud de recuperación
 async function handleForgotPassword(event) {
     event.preventDefault();
 
