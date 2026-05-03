@@ -5,7 +5,6 @@ let calificacionSeleccionada = 0;
 console.log('resenas.js cargado correctamente');
 
 // Abrir modal de detalle de IA
-// Abrir modal de detalle de IA
 async function abrirDetalleIA(iaId) {
     const modal = document.getElementById('iaDetalleModal');
     if (!modal) {
@@ -16,23 +15,16 @@ async function abrirDetalleIA(iaId) {
     abrirModal('iaDetalleModal');
 
     try {
-        // Obtener datos de la IA
         const response = await fetch(`${API_URL}/ias/${iaId}`);
         if (!response.ok) throw new Error('IA no encontrada');
 
         iaActual = await response.json();
 
-        // Llenar datos en el modal
         llenarDetalleIA(iaActual);
-        // Cargar reseñas
-cargarResenas(iaId);
-// Verificar formulario de reseña
-verificarEstadoFormularioResena(iaId);
-// Verificar si es favorito
-verificarSiEsFavorito(iaId);
-
-// Resetear calificación
-calificacionSeleccionada = 0;
+        cargarResenas(iaId);
+        verificarEstadoFormularioResena(iaId);
+        verificarSiEsFavorito(iaId);
+        calificacionSeleccionada = 0;
 
     } catch (error) {
         console.error('Error al cargar detalle:', error);
@@ -42,9 +34,7 @@ calificacionSeleccionada = 0;
 }
 
 // Llenar datos de la IA en el modal
-// Llenar datos de la IA en el modal
 function llenarDetalleIA(ia) {
-    // Logo
     const logoContainer = document.getElementById('iaDetalleLogo');
     if (ia.imagen_logo) {
         logoContainer.innerHTML = `<img src="${ia.imagen_logo}" alt="${ia.nombre}" onerror="this.parentElement.innerHTML='🤖'">`;
@@ -52,26 +42,19 @@ function llenarDetalleIA(ia) {
         logoContainer.innerHTML = ia.categorias?.icono || '🤖';
     }
 
-    // Info básica
     document.getElementById('iaDetalleNombre').textContent = ia.nombre;
     document.getElementById('iaDetalleCategoria').textContent = `${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}`;
 
-    // Rating
     const rating = parseFloat(ia.calificacion_promedio) || 0;
     document.getElementById('iaDetalleRating').innerHTML = `
         <span class="star-filled">★</span> ${rating.toFixed(1)}
     `;
 
-    // Descripción
     document.getElementById('iaDetalleDescripcion').textContent = ia.descripcion;
-
-    // Stats
     document.getElementById('iaDetalleUsos').textContent = formatearNumeroCorto(ia.total_usos || 0);
     document.getElementById('iaDetalleNumResenas').textContent = ia.total_resenas || 0;
-
-    // URL del botón
     document.getElementById('iaDetalleUrl').href = ia.url;
-    // Limpiar formulario
+    
     calificacionSeleccionada = 0;
     actualizarEstrellasVisuales(0);
     document.getElementById('calificacionTexto').textContent = 'Selecciona';
@@ -85,6 +68,7 @@ function formatearNumeroCorto(num) {
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
     return num.toString();
 }
+
 // Cargar reseñas de la IA
 async function cargarResenas(iaId) {
     const container = document.getElementById('resenasLista');
@@ -96,7 +80,6 @@ async function cargarResenas(iaId) {
 
         const resenas = await response.json();
 
-        // Actualizar contador
         document.getElementById('resenasCount').textContent = `(${resenas.length})`;
         document.getElementById('iaDetalleNumResenas').textContent = resenas.length;
 
@@ -114,7 +97,6 @@ async function cargarResenas(iaId) {
             const iniciales = (usuario.username || 'U').substring(0, 2).toUpperCase();
             const estrellas = '★'.repeat(resena.puntuacion) + '☆'.repeat(5 - resena.puntuacion);
 
-            // Determinar el contenido del avatar
             let avatarContent;
             if (usuario.avatar && usuario.avatar.startsWith('http')) {
                 avatarContent = `<img src="${usuario.avatar}" alt="${usuario.username}" onerror="this.parentElement.textContent='${iniciales}'">`;
@@ -128,7 +110,7 @@ async function cargarResenas(iaId) {
                         <div class="resena-usuario">
                             <div class="resena-avatar">${avatarContent}</div>
                             <div class="resena-usuario-info">
-                                <span class="resena-username">${usuario.username || 'Usuario'}</span>
+                                <a href="/pages/usuario.html?u=${encodeURIComponent(usuario.username || 'Usuario')}" class="resena-username-link" onclick="event.stopPropagation();">${usuario.username || 'Usuario'}</a>
                                 <span class="resena-fecha">${formatearFechaCorta(resena.fecha)}</span>
                             </div>
                         </div>
@@ -164,7 +146,6 @@ async function verificarEstadoFormularioResena(iaId) {
     const loginRequired = document.getElementById('resenaLoginRequired');
     const yaEnviada = document.getElementById('resenaYaEnviada');
 
-    // Ocultar todo primero
     form.style.display = 'none';
     loginRequired.style.display = 'none';
     yaEnviada.style.display = 'none';
@@ -174,7 +155,6 @@ async function verificarEstadoFormularioResena(iaId) {
         return;
     }
 
-    // Verificar si ya dejó reseña
     try {
         const response = await fetch(`${API_URL}/resenas/ia/${iaId}`);
         const resenas = await response.json();
@@ -271,14 +251,18 @@ async function enviarResena() {
         const data = await response.json();
 
         if (!response.ok) {
+            // Verificar si es error de email no verificado
+            if (data.codigo === 'EMAIL_NO_VERIFICADO') {
+                cerrarModal('iaDetalleModal');
+                mostrarModalEmailNoVerificado('resena');
+                return;
+            }
             throw new Error(data.error || 'Error al enviar reseña');
         }
 
         mostrarNotificacion('¡Reseña publicada! +10 puntos', 'success');
-        // Verificar si ganó medallas
         verificarMedallasNuevas();
 
-        // Actualizar puntos del usuario en localStorage
         const usuario = obtenerUsuario();
         if (usuario) {
             usuario.puntos_totales = (usuario.puntos_totales || 0) + 10;
@@ -286,7 +270,6 @@ async function enviarResena() {
             actualizarHeaderUsuario();
         }
 
-        // Recargar reseñas y formulario
         await cargarResenas(iaActual.ia_id);
         verificarEstadoFormularioResena(iaActual.ia_id);
 
@@ -351,30 +334,40 @@ async function toggleFavoritoDetalle() {
             btn.classList.remove('favorito-activo');
             mostrarNotificacion('Eliminado de favoritos', 'info');
         } else {
-            await fetch(`${API_URL}/favoritos`, {
+            const response = await fetch(`${API_URL}/favoritos`, {
                 method: 'POST',
                 headers: obtenerHeaders(),
                 body: JSON.stringify({ ia_id: iaActual.ia_id })
             });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                // Verificar si es error de email no verificado
+                if (data.codigo === 'EMAIL_NO_VERIFICADO') {
+                    mostrarModalEmailNoVerificado('favorito');
+                    return;
+                }
+                throw new Error(data.error);
+            }
+            
             icon.textContent = '❤️';
             btn.classList.add('favorito-activo');
             mostrarNotificacion('Agregado a favoritos ❤️', 'success');
         }
     } catch (error) {
-        mostrarNotificacion('Error al actualizar favoritos', 'error');
+        mostrarNotificacion(error.message || 'Error al actualizar favoritos', 'error');
     }
 }
 
 // Registrar uso y visitar IA
 async function visitarIA(url, iaId) {
     try {
-        // Registrar el uso en el backend
         await fetch(`${API_URL}/ias/${iaId}/uso`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
         
-        // Actualizar el contador en el modal si está abierto
         const usosElement = document.getElementById('iaDetalleUsos');
         if (usosElement && iaActual && iaActual.ia_id === iaId) {
             const usosActuales = iaActual.total_usos || 0;
@@ -385,7 +378,6 @@ async function visitarIA(url, iaId) {
         console.error('Error al registrar uso:', error);
     }
     
-    // Abrir la URL en nueva pestaña
     window.open(url, '_blank');
 }
 
