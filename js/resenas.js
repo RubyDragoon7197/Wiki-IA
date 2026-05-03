@@ -110,7 +110,7 @@ async function cargarResenas(iaId) {
                         <div class="resena-usuario">
                             <div class="resena-avatar">${avatarContent}</div>
                             <div class="resena-usuario-info">
-                                <span class="resena-username">${usuario.username || 'Usuario'}</span>
+                                <a href="/pages/usuario.html?u=${encodeURIComponent(usuario.username || 'Usuario')}" class="resena-username-link" onclick="event.stopPropagation();">${usuario.username || 'Usuario'}</a>
                                 <span class="resena-fecha">${formatearFechaCorta(resena.fecha)}</span>
                             </div>
                         </div>
