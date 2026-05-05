@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const supabase = require('./config/supabase');
@@ -16,7 +17,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ==========================================
 // RUTAS ORIGINALES DE WIKI-IA
