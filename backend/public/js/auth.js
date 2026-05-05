@@ -19,8 +19,10 @@ function togglePassword(inputId, button) {
 
 let API_URL = 'http://localhost:3000/api';
 
-// Detectar si estamos en Codespaces y ajustar la URL
-if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
+// Detectar ambiente
+if (window.location.hostname === 'wiki-ia.xyz') {
+    API_URL = 'https://wiki-ia.xyz/api';
+} else if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
     const currentUrl = window.location.origin;
     
     if (currentUrl.match(/-\d{4,5}\.app\.github\.dev/)) {
@@ -30,7 +32,6 @@ if (window.location.hostname.includes('github.dev') || window.location.hostname.
         const baseHostname = hostname.split('.')[0];
         API_URL = `https://${baseHostname}-3000.app.github.dev/api`;
     }
-    console.log('🌐 Detectado ambiente Codespaces. API URL:', API_URL);
 }
 
 // =============================================
