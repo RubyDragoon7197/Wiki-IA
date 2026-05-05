@@ -223,23 +223,65 @@ function cerrarSesion() {
 // VERIFICACIÓN DE EMAIL
 // =============================================
 
-// Verificar si el email está verificado
+// Verificar si el email está verificado (desde localStorage)
 function emailVerificado() {
     const usuario = obtenerUsuario();
     return usuario && usuario.email_verificado === true;
 }
 
+// Verificar estado de email desde la API y actualizar localStorage
+async function verificarEstadoEmailDesdeAPI() {
+    const token = obtenerToken();
+    if (!token) return false;
+    
+    try {
+        const response = await fetch(`${API_URL}/auth/perfil`, {
+            headers: obtenerHeaders()
+        });
+        
+        if (!response.ok) return false;
+        
+        const data = await response.json();
+        
+        // Actualizar localStorage con el estado real
+        const usuarioLocal = obtenerUsuario();
+        if (usuarioLocal && data.email_verificado !== usuarioLocal.email_verificado) {
+            usuarioLocal.email_verificado = data.email_verificado;
+            localStorage.setItem('usuario', JSON.stringify(usuarioLocal));
+            console.log('📧 Estado de verificación actualizado:', data.email_verificado);
+        }
+        
+        return data.email_verificado === true;
+    } catch (error) {
+        console.error('Error al verificar estado de email:', error);
+        return false;
+    }
+}
+
 // Mostrar banner de verificación si no está verificado
-function mostrarBannerVerificacion() {
+async function mostrarBannerVerificacion() {
     // Remover banner existente si hay
     const bannerExistente = document.getElementById('bannerVerificacion');
     if (bannerExistente) bannerExistente.remove();
     
     const usuario = obtenerUsuario();
     
-    // Solo mostrar si está logueado y NO verificado
-    if (!usuario || usuario.email_verificado) return;
+    // Solo continuar si está logueado
+    if (!usuario) return;
     
+    // Si localStorage dice que está verificado, no mostrar banner
+    if (usuario.email_verificado) return;
+    
+    // Consultar API para verificar estado real
+    const verificadoEnAPI = await verificarEstadoEmailDesdeAPI();
+    
+    // Si ya está verificado en la API, no mostrar banner
+    if (verificadoEnAPI) {
+        console.log('✅ Email ya verificado, no se muestra banner');
+        return;
+    }
+    
+    // Crear y mostrar el banner
     const banner = document.createElement('div');
     banner.id = 'bannerVerificacion';
     banner.className = 'banner-verificacion';
@@ -265,6 +307,12 @@ function mostrarBannerVerificacion() {
 
 // Reenviar email de verificación
 async function reenviarVerificacion() {
+    const btn = document.querySelector('.banner-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+    }
+    
     try {
         const response = await fetch(`${API_URL}/auth/reenviar-verificacion`, {
             method: 'POST',
@@ -280,6 +328,11 @@ async function reenviarVerificacion() {
         }
     } catch (error) {
         mostrarNotificacion('Error de conexión', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Reenviar email';
+        }
     }
 }
 
@@ -329,6 +382,15 @@ function mostrarModalEmailNoVerificado(accion) {
         mensajes[accion] || 'Para realizar esta acción necesitas verificar tu email.';
     
     abrirModal('emailNoVerificadoModal');
+}
+
+// Manejar errores de email no verificado en respuestas del servidor
+function manejarErrorEmailNoVerificado(data, accion) {
+    if (data.codigo === 'EMAIL_NO_VERIFICADO') {
+        mostrarModalEmailNoVerificado(accion);
+        return true;
+    }
+    return false;
 }
 
 // =============================================
@@ -538,9 +600,8 @@ async function handlePublicarIA(event) {
         
         if (!response.ok) {
             // Verificar si es error de email no verificado
-            if (data.codigo === 'EMAIL_NO_VERIFICADO') {
+            if (manejarErrorEmailNoVerificado(data, 'publicar')) {
                 cerrarModal('publicarIAModal');
-                mostrarModalEmailNoVerificado('publicar');
                 return;
             }
             throw new Error(data.error || 'Error al publicar IA');
