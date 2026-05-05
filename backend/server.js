@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { GoogleGenerativeAI } = require("@google/generative-ai"); // Importación de Gemini
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const supabase = require('./config/supabase'); // Importar supabase para el chatbot
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ const favoritosRoutes = require('./routes/favoritos');
 const usuariosRoutes = require('./routes/usuarios');
 const adminRoutes = require('./routes/admin');
 const medallasRoutes = require('./routes/medallas');
+const passwordRoutes = require('./routes/password');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/ias', iasRoutes);
@@ -37,14 +39,20 @@ app.use('/api/favoritos', favoritosRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/medallas', medallasRoutes);
+app.use('/api/password', passwordRoutes);
 
 // Ruta raíz
 app.get('/', (req, res) => {
     res.json({
         nombre: 'Wiki IA - API Backend',
         version: '1.0.0',
-        mensaje: '⚠️  Esta es la API del backend. Para acceder al frontend, usa el puerto 5500',
-        instrucciones: 'Abre index.html en el puerto 5500 para ver la aplicación web'
+        mensaje: 'API de Wiki IA funcionando correctamente',
+        endpoints: {
+            health: '/api/health',
+            ias: '/api/ias',
+            categorias: '/api/categorias',
+            auth: '/api/auth'
+        }
     });
 });
 
@@ -62,15 +70,22 @@ app.post('/api/chatbot', async (req, res) => {
     const { mensaje } = req.body;
 
     try {
-        // 1. OBTENER DATOS REALES DE TU BASE DE DATOS
-        const responseDB = await fetch(`http://localhost:${PORT}/api/ias`);
-        const iasEnBaseDeDatos = await responseDB.json();
+        // 1. OBTENER DATOS REALES DE LA BASE DE DATOS (directo con Supabase)
+        const { data: iasEnBaseDeDatos, error } = await supabase
+            .from('ias')
+            .select('ia_id, nombre, descripcion')
+            .eq('estado', 'aprobada')
+            .eq('activa', true);
+
+        if (error) {
+            console.error('Error al obtener IAs:', error);
+            throw error;
+        }
 
         // 2. CONSTRUIR EL CATÁLOGO EN TEXTO (VERSIÓN PARA MODAL)
         let catalogoActualizado = "";
         if (Array.isArray(iasEnBaseDeDatos)) {
             iasEnBaseDeDatos.forEach(ia => {
-                // MAGIA AQUÍ: En lugar de una URL, le pasamos la función JS
                 catalogoActualizado += `- IA: ${ia.nombre} | Función: ${ia.descripcion} | Enlace: javascript:abrirDetalleIA(${ia.ia_id})\n`;
             });
         }
@@ -91,7 +106,7 @@ app.post('/api/chatbot', async (req, res) => {
 
         // 4. CONFIGURAR Y LLAMAR A GEMINI
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-3-flash-preview",
+            model: "gemini-1.5-flash",
             systemInstruction: systemInstruction 
         });
 
@@ -121,9 +136,6 @@ app.use((err, req, res, next) => {
 // INICIAR SERVIDOR
 // ==========================================
 app.listen(PORT, () => {
-    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-    console.log(`📚 API disponible en http://localhost:${PORT}/api`);
+    console.log(`✅ Servidor corriendo en puerto ${PORT}`);
+    console.log(`📚 API disponible en /api`);
 });
-
-const passwordRoutes = require('./routes/password');
-app.use('/api/password', passwordRoutes);
