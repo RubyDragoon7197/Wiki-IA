@@ -46,7 +46,7 @@ router.post('/forgot', async (req, res) => {
 
         // Enviar email
         await resend.emails.send({
-            from: 'Wiki IA <onboarding@resend.dev>',
+            from: 'Wiki IA <noreply@wiki-ia.xyz>',
             to: usuario.email,
             subject: 'Recupera tu contraseña - Wiki IA',
             html: `

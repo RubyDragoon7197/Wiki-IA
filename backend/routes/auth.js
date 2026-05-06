@@ -61,7 +61,7 @@ router.post('/registro', async (req, res) => {
         const urlVerificacion = `${req.headers.origin || 'http://localhost:5500'}/pages/verificar-email.html?token=${tokenVerificacion}`;
         
         await resend.emails.send({
-            from: 'Wiki IA <onboarding@resend.dev>',
+            from: 'Wiki IA <noreply@wiki-ia.xyz>',
             to: email,
             subject: '✉️ Verifica tu cuenta en Wiki IA',
             html: `
