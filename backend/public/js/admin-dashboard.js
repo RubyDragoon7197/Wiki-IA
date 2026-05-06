@@ -5,7 +5,9 @@
 // Configuración de la API (misma lógica que auth.js)
 let API_URL = 'http://localhost:3000/api';
 
-if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
+if (window.location.hostname === 'wiki-ia.xyz') {
+    API_URL = 'https://wiki-ia.xyz/api';
+} else if (window.location.hostname.includes('github.dev') || window.location.hostname.includes('app.github.dev')) {
     const currentUrl = window.location.origin;
     if (currentUrl.match(/-\d{4,5}\.app\.github\.dev/)) {
         API_URL = currentUrl.replace(/-\d{4,5}\.app\.github\.dev/, '-3000.app.github.dev') + '/api';
