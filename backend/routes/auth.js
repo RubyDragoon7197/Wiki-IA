@@ -58,7 +58,7 @@ router.post('/registro', async (req, res) => {
         if (error) throw error;
 
         // Enviar email de verificación
-        const urlVerificacion = `${req.headers.origin || 'http://localhost:5500'}/pages/verificar-email.html?token=${tokenVerificacion}`;
+        const urlVerificacion = `https://wiki-ia.xyz/pages/verificar-email.html?token=${tokenVerificacion}`;
         
         await resend.emails.send({
             from: 'Wiki IA <noreply@wiki-ia.xyz>',
@@ -184,10 +184,10 @@ router.post('/reenviar-verificacion', verificarToken, async (req, res) => {
             .eq('user_id', usuario.user_id);
 
         // Enviar email
-        const urlVerificacion = `${req.headers.origin || 'http://localhost:5500'}/pages/verificar-email.html?token=${tokenVerificacion}`;
+        const urlVerificacion = `https://wiki-ia.xyz/pages/verificar-email.html?token=${tokenVerificacion}`;
         
         await resend.emails.send({
-            from: 'Wiki IA <onboarding@resend.dev>',
+            from: 'Wiki IA <noreply@wiki-ia.xyz>',
             to: usuario.email,
             subject: '✉️ Verifica tu cuenta en Wiki IA',
             html: `
