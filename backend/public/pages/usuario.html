@@ -7,16 +7,30 @@
     <title>Perfil de Usuario - Wiki IA</title>
     <link rel="stylesheet" href="../css/styles.css">
     <style>
-        body {
-            background: #f5f5f5;
-            min-height: 100vh;
+        .btn-inicio {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(79,70,229,0.3);
+            margin-bottom: 1.5rem;
         }
-
-        .usuario-page {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+        .btn-inicio:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79,70,229,0.4);
+            color: #fff;
         }
+        .btn-inicio svg { width: 16px; height: 16px; flex-shrink: 0; }
 
         .perfil-publico-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -56,9 +70,7 @@
             object-fit: cover;
         }
 
-        .perfil-publico-info {
-            flex: 1;
-        }
+        .perfil-publico-info { flex: 1; }
 
         .perfil-publico-info h1 {
             margin: 0 0 0.25rem 0;
@@ -77,14 +89,9 @@
             border-radius: 12px;
             padding: 1rem 1.25rem;
             margin-top: 1rem;
-            color: white;
-            font-style: italic;
         }
 
-        .perfil-publico-bio p {
-            margin: 0;
-            color: white;
-        }
+        .perfil-publico-bio p { margin: 0; color: white; font-style: italic; }
 
         .perfil-nivel-badge {
             display: inline-flex;
@@ -96,9 +103,7 @@
             margin-top: 1rem;
         }
 
-        .perfil-nivel-badge span {
-            color: white;
-        }
+        .perfil-nivel-badge span { color: white; }
 
         .perfil-stats-row {
             display: flex;
@@ -109,23 +114,10 @@
             margin-top: 1.5rem;
         }
 
-        .perfil-stat {
-            text-align: center;
-        }
+        .perfil-stat { text-align: center; }
+        .perfil-stat-valor { display: block; font-size: 2rem; font-weight: 700; color: white; }
+        .perfil-stat-label { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
 
-        .perfil-stat-valor {
-            display: block;
-            font-size: 2rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .perfil-stat-label {
-            font-size: 0.9rem;
-            color: rgba(255,255,255,0.8);
-        }
-
-        /* Sección de medallas */
         .perfil-seccion {
             background: rgba(255,255,255,0.1);
             border-radius: 16px;
@@ -133,17 +125,9 @@
             margin-top: 1.5rem;
         }
 
-        .perfil-seccion h3 {
-            margin: 0 0 1rem 0;
-            color: white;
-            font-size: 1.1rem;
-        }
+        .perfil-seccion h3 { margin: 0 0 1rem 0; color: white; font-size: 1.1rem; }
 
-        .medallas-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+        .medallas-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
 
         .medalla-card {
             background: rgba(255,255,255,0.15);
@@ -159,25 +143,9 @@
             border-color: rgba(255,255,255,0.4);
         }
 
-        .medalla-icono {
-            display: block;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .medalla-nombre {
-            display: block;
-            font-weight: 600;
-            color: white;
-            font-size: 0.85rem;
-        }
-
-        .medalla-desc {
-            display: block;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.7);
-            margin-top: 0.25rem;
-        }
+        .medalla-icono { display: block; font-size: 2rem; margin-bottom: 0.5rem; }
+        .medalla-nombre { display: block; font-weight: 600; color: white; font-size: 0.85rem; }
+        .medalla-desc { display: block; font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 0.25rem; }
 
         .empty-message-white {
             color: rgba(255,255,255,0.7);
@@ -193,7 +161,6 @@
             font-style: italic;
         }
 
-        /* Tabs */
         .perfil-publico-tabs {
             display: flex;
             gap: 0.5rem;
@@ -214,26 +181,12 @@
             transition: all 0.3s;
         }
 
-        .tab-btn:hover {
-            color: white;
-        }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: white; }
 
-        .tab-btn.active {
-            color: white;
-            border-bottom-color: white;
-        }
+        .tab-content { display: none; padding-top: 1.5rem; }
+        .tab-content.active { display: block; }
 
-        /* Contenido de tabs - FUERA de la card morada */
-        .tab-content {
-            display: none;
-            padding-top: 1.5rem;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Cards de IAs - Estilo blanco */
         .ias-grid-small {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -253,34 +206,12 @@
             transition: all 0.3s;
         }
 
-        .ia-card-small:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
+        .ia-card-small:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+        .ia-card-info h4 { margin: 0 0 0.25rem 0; color: #1f2937; font-size: 1rem; }
+        .ia-card-categoria { font-size: 0.85rem; color: #6b7280; }
+        .ia-card-rating { color: #f59e0b; font-weight: 600; font-size: 0.95rem; }
 
-        .ia-card-info h4 {
-            margin: 0 0 0.25rem 0;
-            color: #1f2937;
-            font-size: 1rem;
-        }
-
-        .ia-card-categoria {
-            font-size: 0.85rem;
-            color: #6b7280;
-        }
-
-        .ia-card-rating {
-            color: #f59e0b;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* Reseñas - Estilo blanco */
-        .resenas-lista-perfil {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+        .resenas-lista-perfil { display: flex; flex-direction: column; gap: 1rem; }
 
         .resena-item {
             background: white;
@@ -292,9 +223,7 @@
             transition: all 0.3s;
         }
 
-        .resena-item:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
+        .resena-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
 
         .resena-item-header {
             display: flex;
@@ -303,34 +232,12 @@
             margin-bottom: 0.75rem;
         }
 
-        .resena-item h4 {
-            margin: 0;
-            color: #1f2937;
-            font-size: 1rem;
-        }
+        .resena-item h4 { margin: 0; color: #1f2937; font-size: 1rem; }
+        .resena-estrellas { color: #f59e0b; }
+        .resena-item p { margin: 0 0 0.5rem 0; color: #374151; font-size: 0.95rem; line-height: 1.5; }
+        .resena-fecha { font-size: 0.85rem; color: #9ca3af; }
+        .sin-comentario { font-style: italic; color: #9ca3af !important; }
 
-        .resena-estrellas {
-            color: #f59e0b;
-        }
-
-        .resena-item p {
-            margin: 0 0 0.5rem 0;
-            color: #374151;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .resena-fecha {
-            font-size: 0.85rem;
-            color: #9ca3af;
-        }
-
-        .sin-comentario {
-            font-style: italic;
-            color: #9ca3af !important;
-        }
-
-        /* Estados de carga y error */
         .loading-container, .error-container {
             min-height: 400px;
             display: flex;
@@ -340,23 +247,9 @@
             color: #374151;
         }
 
-        .loading-container {
-            font-size: 1.2rem;
-        }
-
-        .error-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .error-container h2 {
-            color: #1f2937;
-            margin-bottom: 0.5rem;
-        }
-
-        .error-container p {
-            color: #6b7280;
-        }
+        .error-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .error-container h2 { color: #1f2937; margin-bottom: 0.5rem; }
+        .error-container p { color: #6b7280; }
 
         .btn-volver {
             margin-top: 1rem;
@@ -367,142 +260,127 @@
             text-decoration: none;
             transition: all 0.3s;
         }
+        .btn-volver:hover { background: #5a67d8; }
 
-        .btn-volver:hover {
-            background: #5a67d8;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .perfil-publico-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .perfil-publico-avatar {
-                width: 100px;
-                height: 100px;
-                min-width: 100px;
-                font-size: 2.5rem;
-            }
-
-            .perfil-stats-row {
-                gap: 2rem;
-            }
-
-            .tab-btn {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .ias-grid-small {
-                grid-template-columns: 1fr;
-            }
+            .perfil-publico-header { flex-direction: column; align-items: center; text-align: center; }
+            .perfil-publico-avatar { width: 100px; height: 100px; min-width: 100px; font-size: 2.5rem; }
+            .perfil-stats-row { gap: 2rem; }
+            .tab-btn { padding: 0.75rem 1rem; font-size: 0.9rem; }
+            .ias-grid-small { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
+    <!-- Header igual al resto del sitio -->
+    <header>
         <div class="header-content">
-            <a href="../index.html" class="logo">
-                <span class="logo-text">Wiki IA</span>
-            </a>
+            <div class="header-left">
+                <a href="../index.html" class="logo">Wiki IA</a>
+            </div>
+            <div class="header-buttons" id="headerButtons">
+                <button class="btn btn-secondary" onclick="abrirModal('loginModal')">Iniciar sesión</button>
+                <button class="btn btn-primary" onclick="abrirModal('registroModal')">Registrarse</button>
+            </div>
+            <div class="header-buttons header-user" id="headerUser" style="display: none;">
+                <span class="user-welcome">Hola, <strong id="userName">Usuario</strong></span>
+                <span class="user-points" id="userPoints">0 pts</span>
+                <button class="btn btn-secondary" onclick="cerrarSesion()">Cerrar sesión</button>
+            </div>
         </div>
     </header>
 
-    <main class="main-content usuario-page">
-        <!-- Estado de carga -->
-        <div id="loadingState" class="loading-container">
-            <p>⏳ Cargando perfil...</p>
-        </div>
+    <main class="main-content">
+        <div class="container">
 
-        <!-- Estado de error -->
-        <div id="errorState" class="error-container" style="display: none;">
-            <span class="error-icon">😕</span>
-            <h2>Usuario no encontrado</h2>
-            <p>El perfil que buscas no existe o no está disponible.</p>
-            <a href="../index.html" class="btn-volver">← Volver al inicio</a>
-        </div>
+            <!-- Botón Inicio -->
+            <a href="../index.html" class="btn-inicio">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                    </path>
+                </svg>
+                Inicio
+            </a>
 
-        <!-- Perfil del usuario -->
-        <div id="perfilContainer" class="perfil-publico-container" style="display: none;">
-            <!-- Card principal del perfil (con gradiente morado) -->
-            <div class="perfil-publico-card">
-                <div class="perfil-publico-header">
-                    <div class="perfil-publico-avatar" id="usuarioAvatar">U</div>
-                    <div class="perfil-publico-info">
-                        <h1 id="usuarioNombre">Usuario</h1>
-                        <p class="perfil-publico-fecha">Miembro desde <span id="usuarioFecha">-</span></p>
-                        
-                        <!-- Biografía -->
-                        <div class="perfil-publico-bio" id="bioSection" style="display: none;">
-                            <p id="usuarioBio"></p>
+            <!-- Estado de carga -->
+            <div id="loadingState" class="loading-container">
+                <p>⏳ Cargando perfil...</p>
+            </div>
+
+            <!-- Estado de error -->
+            <div id="errorState" class="error-container" style="display: none;">
+                <span class="error-icon">😕</span>
+                <h2>Usuario no encontrado</h2>
+                <p>El perfil que buscas no existe o no está disponible.</p>
+                <a href="../index.html" class="btn-volver">← Volver al inicio</a>
+            </div>
+
+            <!-- Perfil del usuario -->
+            <div id="perfilContainer" class="perfil-publico-container" style="display: none;">
+                <div class="perfil-publico-card">
+                    <div class="perfil-publico-header">
+                        <div class="perfil-publico-avatar" id="usuarioAvatar">U</div>
+                        <div class="perfil-publico-info">
+                            <h1 id="usuarioNombre">Usuario</h1>
+                            <p class="perfil-publico-fecha">Miembro desde <span id="usuarioFecha">-</span></p>
+                            <div class="perfil-publico-bio" id="bioSection" style="display: none;">
+                                <p id="usuarioBio"></p>
+                            </div>
+                            <div class="perfil-nivel-badge">
+                                <span id="usuarioNivelInsignia">🌱</span>
+                                <span id="usuarioNivelNombre">Novato</span>
+                                <span style="opacity: 0.7;">Nivel <span id="usuarioNivelNum">1</span></span>
+                            </div>
                         </div>
-                        
-                        <!-- Nivel -->
-                        <div class="perfil-nivel-badge">
-                            <span id="usuarioNivelInsignia">🌱</span>
-                            <span id="usuarioNivelNombre">Novato</span>
-                            <span style="opacity: 0.7;">Nivel <span id="usuarioNivelNum">1</span></span>
+                    </div>
+
+                    <div class="perfil-stats-row">
+                        <div class="perfil-stat">
+                            <span class="perfil-stat-valor" id="usuarioPuntos">0</span>
+                            <span class="perfil-stat-label">Puntos</span>
+                        </div>
+                        <div class="perfil-stat">
+                            <span class="perfil-stat-valor" id="usuarioIAs">0</span>
+                            <span class="perfil-stat-label">IAs</span>
+                        </div>
+                        <div class="perfil-stat">
+                            <span class="perfil-stat-valor" id="usuarioResenas">0</span>
+                            <span class="perfil-stat-label">Reseñas</span>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Estadísticas -->
-                <div class="perfil-stats-row">
-                    <div class="perfil-stat">
-                        <span class="perfil-stat-valor" id="usuarioPuntos">0</span>
-                        <span class="perfil-stat-label">Puntos</span>
+
+                    <div class="perfil-seccion">
+                        <h3>🏅 Medallas</h3>
+                        <div id="medallasContainer" class="medallas-grid">
+                            <p class="empty-message-white">Este usuario aún no tiene medallas.</p>
+                        </div>
                     </div>
-                    <div class="perfil-stat">
-                        <span class="perfil-stat-valor" id="usuarioIAs">0</span>
-                        <span class="perfil-stat-label">IAs</span>
-                    </div>
-                    <div class="perfil-stat">
-                        <span class="perfil-stat-valor" id="usuarioResenas">0</span>
-                        <span class="perfil-stat-label">Reseñas</span>
+
+                    <div class="perfil-publico-tabs">
+                        <button class="tab-btn active" onclick="cambiarTab('ias', this)">🤖 IAs Publicadas</button>
+                        <button class="tab-btn" onclick="cambiarTab('resenas', this)">📝 Reseñas</button>
                     </div>
                 </div>
-                
-                <!-- Medallas -->
-                <div class="perfil-seccion">
-                    <h3>🏅 Medallas</h3>
-                    <div id="medallasContainer" class="medallas-grid">
-                        <p class="empty-message-white">Este usuario aún no tiene medallas.</p>
+
+                <div id="tabIas" class="tab-content active">
+                    <div id="iasContainer" class="ias-grid-small">
+                        <p class="empty-message">Este usuario no ha publicado IAs.</p>
                     </div>
                 </div>
-                
-                <!-- Tabs -->
-                <div class="perfil-publico-tabs">
-                    <button class="tab-btn active" onclick="cambiarTab('ias')">
-                        🤖 IAs Publicadas
-                    </button>
-                    <button class="tab-btn" onclick="cambiarTab('resenas')">
-                        📝 Reseñas
-                    </button>
+
+                <div id="tabResenas" class="tab-content">
+                    <div id="resenasContainer" class="resenas-lista-perfil">
+                        <p class="empty-message">Este usuario no ha dejado reseñas.</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Contenido de tabs (fuera de la card, fondo blanco) -->
-            <div id="tabIas" class="tab-content active">
-                <div id="iasContainer" class="ias-grid-small">
-                    <p class="empty-message">Este usuario no ha publicado IAs.</p>
-                </div>
-            </div>
-
-            <div id="tabResenas" class="tab-content">
-                <div id="resenasContainer" class="resenas-lista-perfil">
-                    <p class="empty-message">Este usuario no ha dejado reseñas.</p>
-                </div>
-            </div>
         </div>
     </main>
 
     <script src="../js/auth.js"></script>
     <script>
-        // Obtener username de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get('u');
 
@@ -515,17 +393,11 @@
         async function cargarPerfil(username) {
             try {
                 const response = await fetch(`${API_URL}/usuarios/${username}`);
-                
-                if (!response.ok) {
-                    throw new Error('Usuario no encontrado');
-                }
-
+                if (!response.ok) throw new Error('Usuario no encontrado');
                 const usuario = await response.json();
                 mostrarPerfil(usuario);
-
                 cargarIAs(username);
                 cargarResenas(username);
-
             } catch (error) {
                 console.error('Error al cargar perfil:', error);
                 mostrarError();
@@ -535,10 +407,8 @@
         function mostrarPerfil(usuario) {
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('perfilContainer').style.display = 'block';
-
             document.title = `${usuario.username} - Wiki IA`;
 
-            // Avatar
             const avatarEl = document.getElementById('usuarioAvatar');
             if (usuario.avatar && usuario.avatar.startsWith('http')) {
                 avatarEl.innerHTML = `<img src="${usuario.avatar}" alt="${usuario.username}">`;
@@ -548,7 +418,7 @@
 
             document.getElementById('usuarioNombre').textContent = usuario.username;
             document.getElementById('usuarioPuntos').textContent = usuario.puntos_totales || 0;
-            
+
             if (usuario.nivel_info) {
                 document.getElementById('usuarioNivelInsignia').textContent = usuario.nivel_info.insignia || '🌱';
                 document.getElementById('usuarioNivelNombre').textContent = usuario.nivel_info.nombre || 'Novato';
@@ -558,8 +428,7 @@
             if (usuario.fecha_registro) {
                 const fecha = new Date(usuario.fecha_registro);
                 document.getElementById('usuarioFecha').textContent = fecha.toLocaleDateString('es-ES', {
-                    month: 'long',
-                    year: 'numeric'
+                    month: 'long', year: 'numeric'
                 });
             }
 
@@ -576,12 +445,10 @@
 
         function mostrarMedallas(medallas) {
             const container = document.getElementById('medallasContainer');
-            
             if (medallas.length === 0) {
                 container.innerHTML = '<p class="empty-message-white">Este usuario aún no tiene medallas.</p>';
                 return;
             }
-
             container.innerHTML = medallas.map(m => `
                 <div class="medalla-card obtenida">
                     <span class="medalla-icono">${m.medallas?.imagen || '🏅'}</span>
@@ -595,14 +462,11 @@
             try {
                 const response = await fetch(`${API_URL}/usuarios/${username}/ias`);
                 const ias = await response.json();
-                
                 const container = document.getElementById('iasContainer');
-                
                 if (!ias || ias.length === 0) {
                     container.innerHTML = '<p class="empty-message">Este usuario no ha publicado IAs.</p>';
                     return;
                 }
-
                 container.innerHTML = ias.map(ia => `
                     <div class="ia-card-small" onclick="window.location.href='../index.html?ia=${ia.ia_id}'">
                         <div class="ia-card-info">
@@ -612,7 +476,6 @@
                         <span class="ia-card-rating">⭐ ${ia.calificacion_promedio || '0.0'}</span>
                     </div>
                 `).join('');
-
             } catch (error) {
                 console.error('Error al cargar IAs:', error);
             }
@@ -622,14 +485,11 @@
             try {
                 const response = await fetch(`${API_URL}/usuarios/${username}/resenas`);
                 const resenas = await response.json();
-                
                 const container = document.getElementById('resenasContainer');
-                
                 if (!resenas || resenas.length === 0) {
                     container.innerHTML = '<p class="empty-message">Este usuario no ha dejado reseñas.</p>';
                     return;
                 }
-
                 container.innerHTML = resenas.map(r => `
                     <div class="resena-item" onclick="window.location.href='../index.html?ia=${r.ia_id}'">
                         <div class="resena-item-header">
@@ -640,7 +500,6 @@
                         <span class="resena-fecha">${formatearFecha(r.fecha)}</span>
                     </div>
                 `).join('');
-
             } catch (error) {
                 console.error('Error al cargar reseñas:', error);
             }
@@ -648,25 +507,16 @@
 
         function formatearFecha(fecha) {
             if (!fecha) return '';
-            const d = new Date(fecha);
-            return d.toLocaleDateString('es-ES', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
+            return new Date(fecha).toLocaleDateString('es-ES', {
+                day: 'numeric', month: 'long', year: 'numeric'
             });
         }
 
-        function cambiarTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
-            if (tab === 'ias') {
-                document.getElementById('tabIas').classList.add('active');
-            } else {
-                document.getElementById('tabResenas').classList.add('active');
-            }
+        function cambiarTab(tab, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab === 'ias' ? 'tabIas' : 'tabResenas').classList.add('active');
         }
 
         function mostrarError() {
