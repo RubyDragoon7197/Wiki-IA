@@ -7,9 +7,52 @@
     <title>Todas las IAs - Admin</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        .search-admin-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.4rem 0.75rem;
+            min-width: 280px;
+            max-width: 320px;
+            flex: 1;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-admin-wrapper:focus-within {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+        }
+        .search-admin-wrapper svg {
+            width: 16px;
+            height: 16px;
+            color: #94a3b8;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .search-admin-wrapper input {
+            border: none !important;
+            outline: none !important;
+            background: transparent !important;
+            font-size: 0.875rem;
+            width: 100%;
+            color: #1e293b;
+            cursor: text;
+            padding: 0;
+        }
+        .search-admin-wrapper input::placeholder { color: #94a3b8; }
+
+        .resultado-busqueda {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            padding: 0 0.25rem;
+        }
+    </style>
 </head>
 <body class="admin-body">
-    <!-- Header Admin -->
     <header class="admin-header">
         <div class="admin-header-content">
             <div class="admin-header-left">
@@ -24,7 +67,6 @@
     </header>
 
     <div class="admin-container">
-        <!-- Sidebar -->
         <aside class="admin-sidebar">
             <nav class="admin-nav">
                 <a href="dashboard.html" class="admin-nav-item">
@@ -33,7 +75,6 @@
                     </svg>
                     Dashboard
                 </a>
-                
                 <a href="pendientes.html" class="admin-nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -41,28 +82,24 @@
                     IAs Pendientes
                     <span class="badge badge-warning" id="pendingCount">0</span>
                 </a>
-                
                 <a href="ias.html" class="admin-nav-item active">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     Todas las IAs
                 </a>
-                
                 <a href="usuarios.html" class="admin-nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
                     Usuarios
                 </a>
-                
                 <a href="categorias.html" class="admin-nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                     </svg>
                     Categorías
                 </a>
-                
                 <a href="historial.html" class="admin-nav-item">
                     <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
@@ -72,18 +109,30 @@
             </nav>
         </aside>
 
-        <!-- Contenido Principal -->
         <main class="admin-main">
             <div class="admin-header-section">
                 <h1 class="admin-title">Todas las IAs</h1>
                 <div class="admin-actions">
-                    <!-- Filtros -->
+
+                    <!-- Barra de búsqueda -->
+                    <div class="search-admin-wrapper" onclick="document.getElementById('searchInput').focus()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Buscar por nombre, usuario o categoría..."
+                        >
+                    </div>
+
                     <select id="filtroEstado" class="form-select" onchange="filtrarIAs()">
                         <option value="">Todos los estados</option>
                         <option value="aprobada">Aprobadas</option>
                         <option value="pendiente">Pendientes</option>
                         <option value="rechazada">Rechazadas</option>
                     </select>
+
                     <button class="btn btn-secondary" onclick="cargarTodasLasIAs()">
                         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -109,6 +158,9 @@
                 </div>
             </div>
 
+            <!-- Resultado de búsqueda -->
+            <div id="resultadoBusqueda" class="resultado-busqueda" style="display:none;"></div>
+
             <!-- Tabla de IAs -->
             <div class="admin-card">
                 <div class="table-container">
@@ -124,9 +176,7 @@
                             </tr>
                         </thead>
                         <tbody id="iasTableBody">
-                            <tr>
-                                <td colspan="6" class="loading-cell">Cargando IAs...</td>
-                            </tr>
+                            <tr><td colspan="6" class="loading-cell">Cargando IAs...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -136,52 +186,39 @@
 
     <script src="../js/admin-dashboard.js"></script>
     <script>
-        // Variables
         let todasLasIAs = [];
 
-        // Cargar todas las IAs
         async function cargarTodasLasIAs() {
             const tbody = document.getElementById('iasTableBody');
             tbody.innerHTML = '<tr><td colspan="6" class="loading-cell">Cargando IAs...</td></tr>';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('resultadoBusqueda').style.display = 'none';
 
             try {
-                const response = await fetch(`${API_URL}/admin/ias`, {
-                    headers: obtenerHeaders()
-                });
-
+                const response = await fetch(`${API_URL}/admin/ias`, { headers: obtenerHeaders() });
                 if (!response.ok) throw new Error('Error al cargar IAs');
-
                 todasLasIAs = await response.json();
                 actualizarContadores();
                 renderizarTabla(todasLasIAs);
-
             } catch (error) {
                 console.error('Error:', error);
                 tbody.innerHTML = '<tr><td colspan="6" class="error-cell">Error al cargar las IAs</td></tr>';
             }
         }
 
-        // Actualizar contadores
         function actualizarContadores() {
-            const aprobadas = todasLasIAs.filter(ia => ia.estado === 'aprobada').length;
-            const pendientes = todasLasIAs.filter(ia => ia.estado === 'pendiente').length;
-            const rechazadas = todasLasIAs.filter(ia => ia.estado === 'rechazada').length;
-
-            document.getElementById('countAprobadas').textContent = aprobadas;
-            document.getElementById('countPendientes').textContent = pendientes;
-            document.getElementById('countRechazadas').textContent = rechazadas;
-            document.getElementById('pendingCount').textContent = pendientes;
+            document.getElementById('countAprobadas').textContent = todasLasIAs.filter(ia => ia.estado === 'aprobada').length;
+            document.getElementById('countPendientes').textContent = todasLasIAs.filter(ia => ia.estado === 'pendiente').length;
+            document.getElementById('countRechazadas').textContent = todasLasIAs.filter(ia => ia.estado === 'rechazada').length;
+            document.getElementById('pendingCount').textContent = todasLasIAs.filter(ia => ia.estado === 'pendiente').length;
         }
 
-        // Renderizar tabla
         function renderizarTabla(ias) {
             const tbody = document.getElementById('iasTableBody');
-            
             if (ias.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No hay IAs para mostrar</td></tr>';
                 return;
             }
-
             tbody.innerHTML = ias.map(ia => `
                 <tr>
                     <td>
@@ -190,13 +227,9 @@
                             <a href="${ia.url}" target="_blank" class="ia-url-small">🔗 Ver sitio</a>
                         </div>
                     </td>
-                    <td>
-                        <span class="category-tag">${ia.categorias?.nombre || 'Sin categoría'}</span>
-                    </td>
+                    <td><span class="category-tag">${ia.categorias?.nombre || 'Sin categoría'}</span></td>
                     <td>${ia.usuarios?.username || 'Desconocido'}</td>
-                    <td>
-                        <span class="status-badge status-${ia.estado}">${ia.estado}</span>
-                    </td>
+                    <td><span class="status-badge status-${ia.estado}">${ia.estado}</span></td>
                     <td>${formatearFecha(ia.fecha_publicacion)}</td>
                     <td>
                         <div class="action-buttons">
@@ -211,19 +244,34 @@
             `).join('');
         }
 
-        // Filtrar IAs
-        function filtrarIAs() {
+        function buscarIAs(termino) {
             const estado = document.getElementById('filtroEstado').value;
-            
-            if (estado) {
-                const filtradas = todasLasIAs.filter(ia => ia.estado === estado);
-                renderizarTabla(filtradas);
-            } else {
-                renderizarTabla(todasLasIAs);
+            const resultadoEl = document.getElementById('resultadoBusqueda');
+            const t = termino.trim().toLowerCase();
+            let base = estado ? todasLasIAs.filter(ia => ia.estado === estado) : todasLasIAs;
+
+            if (!t) {
+                resultadoEl.style.display = 'none';
+                renderizarTabla(base);
+                return;
             }
+
+            const filtradas = base.filter(ia =>
+                ia.nombre.toLowerCase().includes(t) ||
+                (ia.usuarios?.username || '').toLowerCase().includes(t) ||
+                (ia.categorias?.nombre || '').toLowerCase().includes(t) ||
+                (ia.descripcion || '').toLowerCase().includes(t)
+            );
+
+            resultadoEl.style.display = 'block';
+            resultadoEl.textContent = `${filtradas.length} resultado${filtradas.length !== 1 ? 's' : ''} para "${termino.trim()}"`;
+            renderizarTabla(filtradas);
         }
 
-        // Ver detalles (modal simple)
+        function filtrarIAs() {
+            buscarIAs(document.getElementById('searchInput').value);
+        }
+
         function verDetalles(id) {
             const ia = todasLasIAs.find(i => i.ia_id === id);
             if (ia) {
@@ -242,16 +290,16 @@ ${ia.descripcion}
             }
         }
 
-        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             if (!verificarAdmin()) return;
-            
             const usuario = JSON.parse(localStorage.getItem('usuario'));
-            if (usuario) {
-                document.getElementById('adminName').textContent = usuario.username;
-            }
-            
+            if (usuario) document.getElementById('adminName').textContent = usuario.username;
             cargarTodasLasIAs();
+
+            // Conectar búsqueda con el input
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                buscarIAs(e.target.value);
+            });
         });
     </script>
 </body>
