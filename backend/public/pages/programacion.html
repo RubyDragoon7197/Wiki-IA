@@ -7,7 +7,6 @@
     <title>Programación - Wiki IA</title>
     <link rel="stylesheet" href="../css/styles.css" />
     <style>
-        /* Botón Inicio */
         .btn-inicio {
             display: inline-flex;
             align-items: center;
@@ -35,7 +34,6 @@
         }
         .btn-inicio svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-        /* Categoría activa en el dropdown */
         .category-link.active {
             background: #ede9fe;
             border-color: #a5b4fc;
@@ -45,10 +43,15 @@
     </style>
 </head>
 <body>
-    <!-- Header igual al index -->
     <header>
         <div class="header-content">
             <div class="header-left">
+                <!-- Botón hamburguesa móvil -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
                 <a href="../index.html" class="logo">Wiki IA</a>
                 <div class="search-container">
                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,10 +73,8 @@
         </div>
     </header>
 
-    <!-- Layout idéntico al index -->
     <div class="main-container">
-
-        <!-- Sidebar izquierdo igual al index -->
+        <!-- Sidebar izquierdo -->
         <aside class="sidebar">
             <nav>
                 <a href="../index.html" class="btn-inicio">
@@ -107,7 +108,6 @@
 
         <!-- Contenido central -->
         <main class="main-content">
-            <!-- Título y descripción de la categoría -->
             <div class="categoria-header">
                 <div class="categoria-info">
                     <h1 class="title" id="categoriaTitulo">
@@ -124,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- Filtros -->
             <div class="filters-container">
                 <button class="filter-btn active" data-filter="most-used">
                     <svg class="filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,13 +152,13 @@
             <div class="empty-state" id="emptyState" style="display: none;">
                 <div class="empty-icon">📭</div>
                 <h3>No hay IAs en esta categoría</h3>
-                <p>Sé el primero en publicar una IA de programación</p>
+                <p>Sé el primero en publicar una IA</p>
                 <button class="btn btn-primary" onclick="abrirModalPublicarIA()">Publicar IA</button>
             </div>
             <div class="ai-grid" id="aiGrid"></div>
         </main>
 
-        <!-- Sidebar derecho igual al index -->
+        <!-- Sidebar derecho -->
         <aside class="sidebar-right">
             <button class="categories-toggle" id="categoriesToggle">
                 <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,11 +169,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </button>
-            <div class="categories-list" id="categoriesList">
-                <!-- Se llena dinámicamente en categorias.js -->
-            </div>
+            <div class="categories-list" id="categoriesList"></div>
         </aside>
-
     </div>
 
     <!-- Chatbot -->
@@ -209,6 +205,51 @@
                     </svg>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Menú Móvil -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-logo">Wiki IA</span>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="mobile-menu-user" id="mobileMenuUser" style="display: none;">
+            <span class="mobile-user-name" id="mobileUserName">Usuario</span>
+            <span class="mobile-user-points" id="mobileUserPoints">0 pts</span>
+        </div>
+        <nav class="mobile-menu-nav">
+            <a href="../index.html" class="mobile-nav-item" onclick="toggleMobileMenu()">
+                <span class="mobile-nav-icon">🏠</span>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="navegarConAuth('../pages/favoritos.html', 'Favoritos'); toggleMobileMenu();">
+                <span class="mobile-nav-icon">♡</span>
+                <span>Favoritos</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="navegarConAuth('../pages/perfil.html', 'Perfil'); toggleMobileMenu();">
+                <span class="mobile-nav-icon">👤</span>
+                <span>Perfil</span>
+            </a>
+            <button class="mobile-nav-publish" onclick="abrirModalPublicarIA(); toggleMobileMenu();">
+                <span>+</span> Publicar IA
+            </button>
+        </nav>
+        <div class="mobile-menu-divider"></div>
+        <div class="mobile-menu-categories">
+            <span class="mobile-categories-title">Categorías</span>
+            <a href="diseno.html" class="mobile-category-link" onclick="toggleMobileMenu()">🎨 Diseño y Arte</a>
+            <a href="programacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💻 Programación</a>
+            <a href="educacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">📚 Educación</a>
+            <a href="negocios-gestion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💼 Negocios y Gestión</a>
+            <a href="salud.html" class="mobile-category-link" onclick="toggleMobileMenu()">🏥 Salud</a>
+            <a href="seguridad.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔒 Seguridad</a>
+            <a href="ciencia.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔬 Ciencia</a>
         </div>
     </div>
 

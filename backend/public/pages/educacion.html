@@ -7,7 +7,6 @@
     <title>Educación - Wiki IA</title>
     <link rel="stylesheet" href="../css/styles.css" />
     <style>
-        /* Botón Inicio */
         .btn-inicio {
             display: inline-flex;
             align-items: center;
@@ -35,7 +34,6 @@
         }
         .btn-inicio svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-        /* Categoría activa en el dropdown */
         .category-link.active {
             background: #ede9fe;
             border-color: #a5b4fc;
@@ -45,10 +43,15 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-content">
             <div class="header-left">
+                <!-- Botón hamburguesa móvil -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
                 <a href="../index.html" class="logo">Wiki IA</a>
                 <div class="search-container">
                     <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,10 +73,8 @@
         </div>
     </header>
 
-    <!-- Layout idéntico al index -->
     <div class="main-container">
-
-        <!-- Sidebar izquierdo igual al index -->
+        <!-- Sidebar izquierdo -->
         <aside class="sidebar">
             <nav>
                 <a href="../index.html" class="btn-inicio">
@@ -107,16 +108,13 @@
 
         <!-- Contenido central -->
         <main class="main-content">
-            <!-- Título y descripción de la categoría -->
             <div class="categoria-header">
                 <div class="categoria-info">
                     <h1 class="title" id="categoriaTitulo">
-                        <span class="categoria-icono" id="categoriaIcono">📚</span>
-                        Educación
+                        <span class="categoria-icono" id="categoriaIcono">💻</span>
+                        Programación
                     </h1>
-                    <p class="categoria-descripcion" id="categoriaDescripcion">
-                        Herramientas de aprendizaje y enseñanza
-                    </p>
+                    <p class="categoria-descripcion" id="categoriaDescripcion">Asistentes de código y desarrollo</p>
                 </div>
                 <div class="categoria-stats">
                     <div class="stat-badge">
@@ -126,7 +124,6 @@
                 </div>
             </div>
 
-            <!-- Filtros -->
             <div class="filters-container">
                 <button class="filter-btn active" data-filter="most-used">
                     <svg class="filter-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,27 +145,20 @@
                 </button>
             </div>
 
-            <!-- Estado de carga -->
             <div class="loading-state" id="loadingState">
                 <div class="loading-spinner"></div>
                 <p>Cargando IAs...</p>
             </div>
-
-            <!-- Estado vacío -->
             <div class="empty-state" id="emptyState" style="display: none;">
                 <div class="empty-icon">📭</div>
                 <h3>No hay IAs en esta categoría</h3>
-                <p>Sé el primero en publicar una IA de educación</p>
+                <p>Sé el primero en publicar una IA</p>
                 <button class="btn btn-primary" onclick="abrirModalPublicarIA()">Publicar IA</button>
             </div>
-
-            <!-- Grid de IAs -->
-            <div class="ai-grid" id="aiGrid">
-                <!-- Las IAs se cargan dinámicamente aquí -->
-            </div>
+            <div class="ai-grid" id="aiGrid"></div>
         </main>
 
-        <!-- Sidebar derecho igual al index -->
+        <!-- Sidebar derecho -->
         <aside class="sidebar-right">
             <button class="categories-toggle" id="categoriesToggle">
                 <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,21 +169,16 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
             </button>
-            <div class="categories-list" id="categoriesList">
-                <!-- Se llena dinámicamente en categorias.js -->
-            </div>
+            <div class="categories-list" id="categoriesList"></div>
         </aside>
-
     </div>
 
-    <!-- Chatbot Button -->
+    <!-- Chatbot -->
     <button class="chatbot-button" id="chatbotBtn">
         <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
         </svg>
     </button>
-
-    <!-- Chatbot Window -->
     <div class="chatbot-window" id="chatbotWindow">
         <div class="chatbot-header">
             <div class="chatbot-header-left">
@@ -209,9 +194,7 @@
             </button>
         </div>
         <div class="chatbot-body" id="chatbotBody">
-            <div class="chat-message">
-                <p>¡Hola! ¿En qué puedo ayudarte hoy?</p>
-            </div>
+            <div class="chat-message"><p>¡Hola! ¿En qué puedo ayudarte hoy?</p></div>
         </div>
         <div class="chatbot-footer">
             <div class="chat-input-container">
@@ -225,16 +208,58 @@
         </div>
     </div>
 
-    <!-- Modales de autenticación (copiar los mismos del index.html) -->
-    <!-- Modal Login -->
+    <!-- Menú Móvil -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-logo">Wiki IA</span>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="mobile-menu-user" id="mobileMenuUser" style="display: none;">
+            <span class="mobile-user-name" id="mobileUserName">Usuario</span>
+            <span class="mobile-user-points" id="mobileUserPoints">0 pts</span>
+        </div>
+        <nav class="mobile-menu-nav">
+            <a href="../index.html" class="mobile-nav-item" onclick="toggleMobileMenu()">
+                <span class="mobile-nav-icon">🏠</span>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="navegarConAuth('../pages/favoritos.html', 'Favoritos'); toggleMobileMenu();">
+                <span class="mobile-nav-icon">♡</span>
+                <span>Favoritos</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="navegarConAuth('../pages/perfil.html', 'Perfil'); toggleMobileMenu();">
+                <span class="mobile-nav-icon">👤</span>
+                <span>Perfil</span>
+            </a>
+            <button class="mobile-nav-publish" onclick="abrirModalPublicarIA(); toggleMobileMenu();">
+                <span>+</span> Publicar IA
+            </button>
+        </nav>
+        <div class="mobile-menu-divider"></div>
+        <div class="mobile-menu-categories">
+            <span class="mobile-categories-title">Categorías</span>
+            <a href="diseno.html" class="mobile-category-link" onclick="toggleMobileMenu()">🎨 Diseño y Arte</a>
+            <a href="programacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💻 Programación</a>
+            <a href="educacion.html" class="mobile-category-link" onclick="toggleMobileMenu()">📚 Educación</a>
+            <a href="negocios-gestion.html" class="mobile-category-link" onclick="toggleMobileMenu()">💼 Negocios y Gestión</a>
+            <a href="salud.html" class="mobile-category-link" onclick="toggleMobileMenu()">🏥 Salud</a>
+            <a href="seguridad.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔒 Seguridad</a>
+            <a href="ciencia.html" class="mobile-category-link" onclick="toggleMobileMenu()">🔬 Ciencia</a>
+        </div>
+    </div>
+
+    <!-- Modales -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-container">
             <div class="modal-header">
                 <h2>Iniciar Sesión</h2>
                 <button class="modal-close-btn" onclick="cerrarModal('loginModal')">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div class="modal-body">
@@ -257,15 +282,12 @@
         </div>
     </div>
 
-    <!-- Modal Registro -->
     <div class="modal-overlay" id="registroModal">
         <div class="modal-container">
             <div class="modal-header">
                 <h2>Crear Cuenta</h2>
                 <button class="modal-close-btn" onclick="cerrarModal('registroModal')">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div class="modal-body">
@@ -296,15 +318,12 @@
         </div>
     </div>
 
-    <!-- Modal Publicar IA -->
     <div class="modal-overlay" id="publicarIAModal">
         <div class="modal-container modal-lg">
             <div class="modal-header">
                 <h2>Publicar Nueva IA</h2>
                 <button class="modal-close-btn" onclick="cerrarModal('publicarIAModal')">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             <div class="modal-body">
@@ -355,109 +374,84 @@
         </div>
     </div>
 
-    <!-- Modal Detalle IA -->
-<div class="modal-overlay" id="iaDetalleModal">
-    <div class="modal-container modal-xl">
-        <div class="ia-detalle-header">
-            <div class="ia-detalle-logo" id="iaDetalleLogo">🤖</div>
-            <div class="ia-detalle-info">
-                <h2 id="iaDetalleNombre">Nombre de la IA</h2>
-                <div class="ia-detalle-meta">
-                    <span class="ia-detalle-categoria" id="iaDetalleCategoria">📁 Categoría</span>
-                    <span class="ia-detalle-rating" id="iaDetalleRating">
-                        <span class="star-filled">★</span> 4.5
-                    </span>
-                </div>
-            </div>
-            <button class="modal-close-btn" onclick="cerrarModal('iaDetalleModal')">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-
-        <div class="ia-detalle-body">
-            <div class="ia-detalle-descripcion">
-                <p id="iaDetalleDescripcion">Descripción de la IA...</p>
-            </div>
-
-            <div class="ia-detalle-actions">
-                <div class="ia-detalle-stats">
-                    <div class="ia-stat">
-                        <span class="ia-stat-icon">👁</span>
-                        <span class="ia-stat-value" id="iaDetalleUsos">0</span>
-                        <span class="ia-stat-label">usos</span>
-                    </div>
-                    <div class="ia-stat">
-                        <span class="ia-stat-icon">📝</span>
-                        <span class="ia-stat-value" id="iaDetalleNumResenas">0</span>
-                        <span class="ia-stat-label">reseñas</span>
+    <div class="modal-overlay" id="iaDetalleModal">
+        <div class="modal-container modal-xl">
+            <div class="ia-detalle-header">
+                <div class="ia-detalle-logo" id="iaDetalleLogo">🤖</div>
+                <div class="ia-detalle-info">
+                    <h2 id="iaDetalleNombre">Nombre de la IA</h2>
+                    <div class="ia-detalle-meta">
+                        <span class="ia-detalle-categoria" id="iaDetalleCategoria">📁 Categoría</span>
+                        <span class="ia-detalle-rating" id="iaDetalleRating"><span class="star-filled">★</span> 4.5</span>
                     </div>
                 </div>
-                <a href="#" target="_blank" class="btn btn-primary" id="iaDetalleUrl">
-                    Visitar IA →
-                </a>
-            </div>
-
-            <div class="ia-detalle-divider"></div>
-
-            <!-- Sección de Reseñas -->
-            <!-- Sección de Reseñas -->
-<div class="ia-resenas-section">
-    <h3 class="resenas-titulo">
-        <span>Reseñas</span>
-        <span class="resenas-count" id="resenasCount">(0)</span>
-    </h3>
-
-    <!-- Formulario para dejar reseña -->
-    <div class="resena-form-container" id="resenaFormContainer">
-        <div class="resena-form" id="resenaForm" style="display: none;">
-            <h4>Deja tu reseña</h4>
-            
-            <div class="calificacion-estrellas">
-                <span class="calificacion-label">Tu calificación:</span>
-                <div class="estrellas-input" id="estrellasInput">
-                    <span class="estrella" data-value="1">★</span>
-                    <span class="estrella" data-value="2">★</span>
-                    <span class="estrella" data-value="3">★</span>
-                    <span class="estrella" data-value="4">★</span>
-                    <span class="estrella" data-value="5">★</span>
-                </div>
-                <span class="calificacion-texto" id="calificacionTexto">Selecciona</span>
-            </div>
-
-            <textarea 
-                id="resenaComentario" 
-                class="resena-textarea" 
-                placeholder="Comparte tu experiencia con esta IA... (opcional)"
-                rows="3"
-            ></textarea>
-
-            <div class="resena-form-footer">
-                <span class="resena-puntos">🎁 Ganarás <strong>10 puntos</strong></span>
-                <button class="btn btn-primary" onclick="enviarResena()" id="btnEnviarResena">
-                    Publicar Reseña
+                <button class="modal-close-btn" onclick="cerrarModal('iaDetalleModal')">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-        </div>
-
-        <div class="resena-login-required" id="resenaLoginRequired" style="display: none;">
-            <p>🔒 <a href="#" onclick="cambiarModal('iaDetalleModal', 'loginModal')">Inicia sesión</a> para dejar una reseña</p>
-        </div>
-
-        <div class="resena-ya-enviada" id="resenaYaEnviada" style="display: none;">
-            <p>✅ Ya dejaste tu reseña en esta IA</p>
+            <div class="ia-detalle-body">
+                <div class="ia-detalle-descripcion"><p id="iaDetalleDescripcion">Descripción de la IA...</p></div>
+                <div class="ia-detalle-actions">
+                    <div class="ia-detalle-stats">
+                        <div class="ia-stat">
+                            <span class="ia-stat-icon">👁</span>
+                            <span class="ia-stat-value" id="iaDetalleUsos">0</span>
+                            <span class="ia-stat-label">usos</span>
+                        </div>
+                        <div class="ia-stat">
+                            <span class="ia-stat-icon">📝</span>
+                            <span class="ia-stat-value" id="iaDetalleNumResenas">0</span>
+                            <span class="ia-stat-label">reseñas</span>
+                        </div>
+                    </div>
+                    <div class="ia-detalle-botones">
+                        <button class="btn btn-secondary" onclick="toggleFavoritoDetalle()" id="btnFavoritoDetalle">
+                            <span id="favoritoIcon">🤍</span> Favorito
+                        </button>
+                        <a href="#" target="_blank" class="btn btn-primary" id="iaDetalleUrl">Visitar IA →</a>
+                    </div>
+                </div>
+                <div class="ia-detalle-divider"></div>
+                <div class="ia-resenas-section">
+                    <h3 class="resenas-titulo">
+                        <span>Reseñas</span>
+                        <span class="resenas-count" id="resenasCount">(0)</span>
+                    </h3>
+                    <div class="resena-form-container" id="resenaFormContainer">
+                        <div class="resena-form" id="resenaForm" style="display: none;">
+                            <h4>Deja tu reseña</h4>
+                            <div class="calificacion-estrellas">
+                                <span class="calificacion-label">Tu calificación:</span>
+                                <div class="estrellas-input" id="estrellasInput">
+                                    <span class="estrella" data-value="1">★</span>
+                                    <span class="estrella" data-value="2">★</span>
+                                    <span class="estrella" data-value="3">★</span>
+                                    <span class="estrella" data-value="4">★</span>
+                                    <span class="estrella" data-value="5">★</span>
+                                </div>
+                                <span class="calificacion-texto" id="calificacionTexto">Selecciona</span>
+                            </div>
+                            <textarea id="resenaComentario" class="resena-textarea" placeholder="Comparte tu experiencia con esta IA... (opcional)" rows="3"></textarea>
+                            <div class="resena-form-footer">
+                                <span class="resena-puntos">🎁 Ganarás <strong>10 puntos</strong></span>
+                                <button class="btn btn-primary" onclick="enviarResena()" id="btnEnviarResena">Publicar Reseña</button>
+                            </div>
+                        </div>
+                        <div class="resena-login-required" id="resenaLoginRequired" style="display: none;">
+                            <p>🔒 <a href="#" onclick="cambiarModal('iaDetalleModal', 'loginModal')">Inicia sesión</a> para dejar una reseña</p>
+                        </div>
+                        <div class="resena-ya-enviada" id="resenaYaEnviada" style="display: none;">
+                            <p>✅ Ya dejaste tu reseña en esta IA</p>
+                        </div>
+                    </div>
+                    <div class="resenas-lista" id="resenasLista">
+                        <div class="resenas-loading">Cargando reseñas...</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="resenas-lista" id="resenasLista">
-        <div class="resenas-loading">Cargando reseñas...</div>
-    </div>
-</div>
-        </div>
-    </div>
-</div>
-    <!-- Scripts -->
     <script src="../js/script.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/categorias.js"></script>
