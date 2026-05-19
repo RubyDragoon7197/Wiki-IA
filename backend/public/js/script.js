@@ -1,5 +1,5 @@
 // =============================================================================
-// CHATBOT - Funcionalidad con historial persistente entre páginas
+// CHATBOT - Historial persistente por usuario en base de datos
 // =============================================================================
 
 const chatbotBtn = document.getElementById('chatbotBtn');
@@ -10,58 +10,104 @@ const chatInput = document.getElementById('chatInput');
 const chatbotBody = document.getElementById('chatbotBody');
 
 if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chatbotBody) {
-    
+
     // Escuchar clics en los enlaces generados por el bot
     chatbotBody.addEventListener('click', (e) => {
         const botLink = e.target.closest('.link-modal-bot');
         if (botLink) {
             e.preventDefault();
             const idIA = botLink.getAttribute('data-id');
-            
             if (typeof abrirDetalleIA === 'function') {
                 abrirDetalleIA(idIA);
             }
         }
     });
 
-    function loadChatHistory() {
+    // ── Renderizar un mensaje en el chat ──────────────────────────────────
+    function agregarMensaje(texto, esUsuario) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${esUsuario ? 'user-message' : ''}`;
+
+        if (esUsuario) {
+            div.innerHTML = `<p><strong>Tú:</strong> ${texto}</p>`;
+        } else {
+            // Formatear markdown del bot
+            const formateado = texto
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\[([^\]]+)\]\s*\(javascript:abrirDetalleIA\(([^)]+)\)\)/g,
+                    '<a href="#" class="link-modal-bot" data-id="$2" style="color:#007bff;text-decoration:underline;font-weight:bold;cursor:pointer;">$1</a>')
+                .replace(/\n/g, '<br>');
+            div.innerHTML = `<p>${formateado}</p>`;
+        }
+
+        chatbotBody.appendChild(div);
+        chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        return div;
+    }
+
+    // ── Cargar historial desde BD (si está logueado) o sessionStorage ─────
+    async function cargarHistorial() {
+        const usuario = typeof obtenerUsuario === 'function' ? obtenerUsuario() : null;
+
+        if (usuario) {
+            // Usuario autenticado → cargar desde BD
+            try {
+                const headers = typeof obtenerHeaders === 'function' ? obtenerHeaders() : {};
+                const response = await fetch(`${API_URL}/chatbot/historial`, { headers });
+
+                if (response.ok) {
+                    const historial = await response.json();
+
+                    if (historial.length === 0) {
+                        // Mostrar mensaje de bienvenida si no hay historial
+                        chatbotBody.innerHTML = '<div class="chat-message"><p>¡Hola! ¿En qué puedo ayudarte hoy?</p></div>';
+                        return;
+                    }
+
+                    chatbotBody.innerHTML = '';
+                    historial.forEach(item => {
+                        agregarMensaje(item.mensaje, true);
+                        agregarMensaje(item.respuesta, false);
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.error('Error al cargar historial:', e);
+            }
+        }
+
+        // Sin sesión → usar sessionStorage como antes
         const history = sessionStorage.getItem('chatbot_history');
         if (history) {
-            const messages = JSON.parse(history);
             chatbotBody.innerHTML = '';
+            const messages = JSON.parse(history);
             messages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${msg.isUser ? 'user-message' : ''}`;
-                messageDiv.innerHTML = msg.isUser 
-                    ? `<p><strong>Tú:</strong> ${msg.text}</p>`
-                    : `<p>${msg.text}</p>`; 
-                chatbotBody.appendChild(messageDiv);
+                agregarMensaje(msg.text, msg.isUser);
             });
-            chatbotBody.scrollTop = chatbotBody.scrollHeight;
         }
     }
 
-    function saveMessage(text, isUser = true) {
+    // ── Guardar en sessionStorage (usuarios sin sesión) ───────────────────
+    function guardarEnSession(texto, esUsuario) {
+        const usuario = typeof obtenerUsuario === 'function' ? obtenerUsuario() : null;
+        if (usuario) return; // si está logueado, la BD lo guarda
+
         const history = sessionStorage.getItem('chatbot_history');
-        const messages = history ? JSON.parse(history) : [{text: '¡Hola! Soy el asistente de Wiki-IA. ¿En qué puedo ayudarte?', isUser: false}];
-        messages.push({text, isUser});
+        const messages = history ? JSON.parse(history) : [{ text: '¡Hola! Soy el asistente de Wiki-IA.', isUser: false }];
+        messages.push({ text: texto, isUser: esUsuario });
         sessionStorage.setItem('chatbot_history', JSON.stringify(messages));
     }
 
+    // ── Enviar mensaje ────────────────────────────────────────────────────
     async function sendMessage() {
         const message = chatInput.value.trim();
         if (!message) return;
 
-        // Mostrar mensaje usuario
-        const userMessageDiv = document.createElement('div');
-        userMessageDiv.className = 'chat-message user-message';
-        userMessageDiv.innerHTML = `<p><strong>Tú:</strong> ${message}</p>`;
-        chatbotBody.appendChild(userMessageDiv);
+        agregarMensaje(message, true);
+        guardarEnSession(message, true);
         chatInput.value = '';
-        chatbotBody.scrollTop = chatbotBody.scrollHeight;
-        saveMessage(message, true);
 
-        // Indicador de carga
+        // Indicador de escritura
         const typingDiv = document.createElement('div');
         typingDiv.className = 'chat-message';
         typingDiv.innerHTML = '<p><em>Escribiendo...</em></p>';
@@ -69,29 +115,22 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         chatbotBody.scrollTop = chatbotBody.scrollHeight;
 
         try {
+            // Enviar token si está logueado para que el backend guarde en BD
+            const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('token');
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const response = await fetch(`${API_URL}/chatbot`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ mensaje: message })
             });
 
             const data = await response.json();
             typingDiv.remove();
 
-            const botMessageDiv = document.createElement('div');
-            botMessageDiv.className = 'chat-message';
-
-            // TRADUCTOR DE MARKDOWN A HTML
-            let textoFormateado = data.respuesta
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\[([^\]]+)\]\s*\(javascript:abrirDetalleIA\(([^)]+)\)\)/g, 
-                    '<a href="#" class="link-modal-bot" data-id="$2" style="color: #007bff; text-decoration: underline; font-weight: bold; cursor: pointer;">$1</a>')
-                .replace(/\n/g, '<br>');
-
-            botMessageDiv.innerHTML = `<p>${textoFormateado}</p>`;
-            chatbotBody.appendChild(botMessageDiv);
-            chatbotBody.scrollTop = chatbotBody.scrollHeight;
-            saveMessage(textoFormateado, false);
+            agregarMensaje(data.respuesta, false);
+            guardarEnSession(data.respuesta, false);
 
         } catch (error) {
             console.error('Error:', error);
@@ -99,10 +138,12 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
         }
     }
 
-    chatbotBtn.addEventListener('click', () => {
+    // ── Abrir / cerrar chatbot ────────────────────────────────────────────
+    chatbotBtn.addEventListener('click', async () => {
         chatbotWindow.classList.add('active');
         chatbotBtn.style.display = 'none';
         sessionStorage.setItem('chatbot_state', 'open');
+        await cargarHistorial();
     });
 
     chatbotClose.addEventListener('click', () => {
@@ -114,10 +155,11 @@ if (chatbotBtn && chatbotWindow && chatbotClose && chatSend && chatInput && chat
     chatSend.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-    loadChatHistory();
+    // Restaurar estado abierto si venía abierto
     if (sessionStorage.getItem('chatbot_state') === 'open') {
         chatbotWindow.classList.add('active');
         chatbotBtn.style.display = 'none';
+        cargarHistorial();
     }
 }
 
@@ -159,32 +201,20 @@ class Pagination {
     }
     
     async init() {
-        if (this.btnPrevious) {
-            this.btnPrevious.addEventListener('click', () => this.previousPage());
-        }
-        
-        if (this.btnNext) {
-            this.btnNext.addEventListener('click', () => this.nextPage());
-        }
-        
-        // Cargar IAs desde la API
+        if (this.btnPrevious) this.btnPrevious.addEventListener('click', () => this.previousPage());
+        if (this.btnNext) this.btnNext.addEventListener('click', () => this.nextPage());
         await this.loadAIsFromAPI();
         this.loadPage(1);
     }
     
     async loadAIsFromAPI() {
         try {
-            // Mostrar loading
             if (this.aiGrid) {
                 this.aiGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Cargando IAs...</p></div>';
             }
-
             const response = await fetch(`${API_URL}/ias`);
             if (!response.ok) throw new Error('Error al cargar IAs');
-            
-            const ias = await response.json();
-            this.allAIs = ias;
-            
+            this.allAIs = await response.json();
         } catch (error) {
             console.error('Error al cargar IAs:', error);
             if (this.aiGrid) {
@@ -196,59 +226,39 @@ class Pagination {
     filterAndSort(filter) {
         this.currentFilter = filter;
         let sorted = [...this.allAIs];
-        
         switch(filter) {
-            case 'latest':
-                sorted.sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion));
-                break;
-            case 'top-rated':
-                sorted.sort((a, b) => (parseFloat(b.calificacion_promedio) || 0) - (parseFloat(a.calificacion_promedio) || 0));
-                break;
-            case 'most-used':
-                sorted.sort((a, b) => (b.total_usos || 0) - (a.total_usos || 0));
-                break;
+            case 'latest':    sorted.sort((a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion)); break;
+            case 'top-rated': sorted.sort((a, b) => (parseFloat(b.calificacion_promedio) || 0) - (parseFloat(a.calificacion_promedio) || 0)); break;
+            case 'most-used': sorted.sort((a, b) => (b.total_usos || 0) - (a.total_usos || 0)); break;
         }
-        
         return sorted;
     }
     
     loadPage(page) {
         this.currentPage = page;
-        
         const filteredAIs = this.filterAndSort(this.currentFilter);
         this.totalItems = filteredAIs.length;
-        
         const startIndex = (page - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const pageItems = filteredAIs.slice(startIndex, endIndex);
-        
+        const pageItems = filteredAIs.slice(startIndex, startIndex + this.itemsPerPage);
         this.renderAIs(pageItems);
         this.updatePaginationControls();
     }
     
     renderAIs(ias) {
         if (!this.aiGrid) return;
-        
         if (ias.length === 0) {
             this.aiGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><h3>No hay IAs</h3><p>Aún no hay IAs publicadas</p></div>';
             return;
         }
-        
         this.aiGrid.innerHTML = '';
-        
-        ias.forEach(ia => {
-            const card = this.createAICard(ia);
-            this.aiGrid.appendChild(card);
-        });
+        ias.forEach(ia => this.aiGrid.appendChild(this.createAICard(ia)));
     }
     
     createAICard(ia) {
         const card = document.createElement('div');
         card.className = 'ai-card';
-        
         const rating = parseFloat(ia.calificacion_promedio) || 0;
         const fecha = ia.fecha_publicacion ? new Date(ia.fecha_publicacion) : new Date();
-        
         card.innerHTML = `
             <div class="ai-card-clickable" onclick="abrirDetalleIA(${ia.ia_id})">
                 <div class="ai-card-header">
@@ -275,7 +285,6 @@ class Pagination {
             </div>
             <button class="btn btn-primary ai-link-btn" onclick="event.stopPropagation(); visitarIA('${ia.url}', ${ia.ia_id})">Visitar IA</button>
         `;
-        
         return card;
     }
     
@@ -293,17 +302,9 @@ class Pagination {
     
     updatePaginationControls() {
         const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-        
-        if (this.btnPrevious) {
-            this.btnPrevious.disabled = this.currentPage === 1;
-        }
-        
-        if (this.btnNext) {
-            this.btnNext.disabled = this.currentPage === totalPages || totalPages === 0;
-        }
-        
+        if (this.btnPrevious) this.btnPrevious.disabled = this.currentPage === 1;
+        if (this.btnNext) this.btnNext.disabled = this.currentPage === totalPages || totalPages === 0;
         this.renderPageNumbers(totalPages);
-        
         if (this.paginationInfo) {
             if (this.totalItems === 0) {
                 this.paginationInfo.textContent = 'No hay IAs para mostrar';
@@ -317,44 +318,20 @@ class Pagination {
     
     renderPageNumbers(totalPages) {
         if (!this.paginationNumbers) return;
-        
         this.paginationNumbers.innerHTML = '';
-        
         if (totalPages === 0) return;
-        
         const maxVisible = 5;
         let startPage = Math.max(1, this.currentPage - 2);
         let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-        
-        if (endPage - startPage < maxVisible - 1) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-        }
-        
-        if (startPage > 1) {
-            this.addPageButton(1);
-            if (startPage > 2) {
-                this.addDots();
-            }
-        }
-        
-        for (let i = startPage; i <= endPage; i++) {
-            this.addPageButton(i);
-        }
-        
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                this.addDots();
-            }
-            this.addPageButton(totalPages);
-        }
+        if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+        if (startPage > 1) { this.addPageButton(1); if (startPage > 2) this.addDots(); }
+        for (let i = startPage; i <= endPage; i++) this.addPageButton(i);
+        if (endPage < totalPages) { if (endPage < totalPages - 1) this.addDots(); this.addPageButton(totalPages); }
     }
     
     addPageButton(page) {
         const button = document.createElement('button');
-        button.className = 'pagination-number';
-        if (page === this.currentPage) {
-            button.classList.add('active');
-        }
+        button.className = `pagination-number${page === this.currentPage ? ' active' : ''}`;
         button.textContent = page;
         button.addEventListener('click', () => this.loadPage(page));
         this.paginationNumbers.appendChild(button);
@@ -367,23 +344,9 @@ class Pagination {
         this.paginationNumbers.appendChild(dots);
     }
     
-    previousPage() {
-        if (this.currentPage > 1) {
-            this.loadPage(this.currentPage - 1);
-        }
-    }
-    
-    nextPage() {
-        const totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-        if (this.currentPage < totalPages) {
-            this.loadPage(this.currentPage + 1);
-        }
-    }
-    
-    changeFilter(filter) {
-        this.currentFilter = filter;
-        this.loadPage(1);
-    }
+    previousPage() { if (this.currentPage > 1) this.loadPage(this.currentPage - 1); }
+    nextPage() { const t = Math.ceil(this.totalItems / this.itemsPerPage); if (this.currentPage < t) this.loadPage(this.currentPage + 1); }
+    changeFilter(filter) { this.currentFilter = filter; this.loadPage(1); }
 }
 
 // =============================================================================
@@ -393,35 +356,24 @@ class Pagination {
 let pagination;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Solo inicializar paginación si estamos en la página principal (index.html)
     if (document.getElementById('aiGrid') && document.getElementById('paginationContainer')) {
         pagination = new Pagination(12);
     }
-    
-    // Conectar con los filtros
+
     const filterBtns = document.querySelectorAll('.filter-btn');
-    
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             const filter = btn.getAttribute('data-filter');
-            
             const titles = {
                 'latest': 'Últimas IAs Publicadas',
                 'top-rated': 'IAs Mejor Calificadas',
                 'most-used': 'IAs Más Usadas'
             };
-            
             const mainTitle = document.getElementById('mainTitle');
-            if (mainTitle) {
-                mainTitle.textContent = titles[filter];
-            }
-            
-            if (pagination) {
-                pagination.changeFilter(filter);
-            }
+            if (mainTitle) mainTitle.textContent = titles[filter];
+            if (pagination) pagination.changeFilter(filter);
         });
     });
 });
@@ -435,97 +387,52 @@ function configurarBusquedaGlobal() {
     if (!searchInput) return;
 
     let timeout;
-
     searchInput.addEventListener('input', (e) => {
         clearTimeout(timeout);
         const termino = e.target.value.trim();
-
         timeout = setTimeout(async () => {
-            if (termino.length < 2) {
-                // Restaurar vista normal
-                restaurarVistaNormal();
-                return;
-            }
-
+            if (termino.length < 2) { restaurarVistaNormal(); return; }
             await buscarIAs(termino);
         }, 300);
     });
 
-    // Buscar al presionar Enter
     searchInput.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter') {
             const termino = e.target.value.trim();
-            if (termino.length >= 2) {
-                await buscarIAs(termino);
-            } else {
-                restaurarVistaNormal();
-            }
+            if (termino.length >= 2) await buscarIAs(termino);
+            else restaurarVistaNormal();
         }
     });
 }
 
 function restaurarVistaNormal() {
-    // Restaurar título
     const mainTitle = document.getElementById('mainTitle');
-    if (mainTitle) {
-        mainTitle.textContent = 'IAs Más Usadas';
-    }
-
-    // Mostrar paginación
+    if (mainTitle) mainTitle.textContent = 'IAs Más Usadas';
     const paginationContainer = document.getElementById('paginationContainer');
-    if (paginationContainer) {
-        paginationContainer.style.display = 'flex';
-    }
-
-    // Recargar IAs
-    if (pagination) {
-        pagination.loadPage(1);
-    }
+    if (paginationContainer) paginationContainer.style.display = 'flex';
+    if (pagination) pagination.loadPage(1);
 }
 
 async function buscarIAs(termino) {
     const aiGrid = document.getElementById('aiGrid');
     if (!aiGrid) return;
-
-    // Mostrar loading
     aiGrid.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Buscando...</p></div>';
-
     try {
         const response = await fetch(`${API_URL}/ias/buscar/${encodeURIComponent(termino)}`);
         if (!response.ok) throw new Error('Error en búsqueda');
-
         const ias = await response.json();
-
-        // Actualizar título
         const mainTitle = document.getElementById('mainTitle');
-        if (mainTitle) {
-            mainTitle.textContent = `Resultados para "${termino}"`;
-        }
-
-        // Ocultar paginación durante búsqueda
+        if (mainTitle) mainTitle.textContent = `Resultados para "${termino}"`;
         const paginationContainer = document.getElementById('paginationContainer');
         const paginationInfo = document.getElementById('paginationInfo');
         if (paginationContainer) paginationContainer.style.display = 'none';
         if (paginationInfo) paginationInfo.textContent = `${ias.length} resultado(s) encontrado(s)`;
-
-        // Mostrar resultados
         if (ias.length === 0) {
-            aiGrid.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">🔍</div>
-                    <h3>Sin resultados</h3>
-                    <p>No se encontraron IAs para "${termino}"</p>
-                </div>
-            `;
+            aiGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>No se encontraron IAs para "${termino}"</p></div>`;
             return;
         }
-
         aiGrid.innerHTML = '';
-        ias.forEach(ia => {
-            const card = crearTarjetaBusqueda(ia);
-            aiGrid.appendChild(card);
-        });
-
+        ias.forEach(ia => aiGrid.appendChild(crearTarjetaBusqueda(ia)));
     } catch (error) {
         console.error('Error en búsqueda:', error);
         aiGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><h3>Error</h3><p>No se pudo realizar la búsqueda</p></div>';
@@ -535,9 +442,7 @@ async function buscarIAs(termino) {
 function crearTarjetaBusqueda(ia) {
     const card = document.createElement('div');
     card.className = 'ai-card';
-
     const rating = parseFloat(ia.calificacion_promedio) || 0;
-
     card.innerHTML = `
         <div class="ai-card-clickable" onclick="abrirDetalleIA(${ia.ia_id})">
             <div class="ai-card-header">
@@ -560,30 +465,25 @@ function crearTarjetaBusqueda(ia) {
         </div>
         <button class="btn btn-primary ai-link-btn" onclick="event.stopPropagation(); visitarIA('${ia.url}', ${ia.ia_id})">Visitar IA</button>
     `;
-
     return card;
 }
 
-// Agregar al DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    configurarBusquedaGlobal();
-});
+document.addEventListener('DOMContentLoaded', () => { configurarBusquedaGlobal(); });
 
-// Toggle menú móvil
+// =============================================================================
+// MENÚ MÓVIL
+// =============================================================================
+
 function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     const overlay = document.getElementById('mobileMenuOverlay');
-    
     if (menu && overlay) {
         menu.classList.toggle('active');
         overlay.classList.toggle('active');
         document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
     }
-    
-    // Actualizar info del usuario en el menú móvil
     const usuario = obtenerUsuario();
     const mobileMenuUser = document.getElementById('mobileMenuUser');
-    
     if (usuario && mobileMenuUser) {
         mobileMenuUser.style.display = 'flex';
         document.getElementById('mobileUserName').textContent = usuario.username;

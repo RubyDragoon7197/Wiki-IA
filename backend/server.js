@@ -48,11 +48,31 @@ app.get('/api/health', (req, res) => {
 });
 
 // ==========================================
+// MIDDLEWARE para verificar token (chatbot)
+// ==========================================
+function verificarTokenChatbot(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return next(); // no obligatorio, usuario anónimo
+
+    const token = authHeader.split(' ')[1];
+    if (!token) return next();
+
+    try {
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.usuario = decoded;
+    } catch (e) {
+        // token inválido, continuar como anónimo
+    }
+    next();
+}
+
+// ==========================================
 // RUTA DINÁMICA DEL CHATBOT - WIKI-IA
 // ==========================================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-app.post('/api/chatbot', async (req, res) => {
+app.post('/api/chatbot', verificarTokenChatbot, async (req, res) => {
     const { mensaje } = req.body;
 
     try {
@@ -95,6 +115,17 @@ app.post('/api/chatbot', async (req, res) => {
         const result = await model.generateContent(mensaje);
         const respuestaIA = result.response.text();
 
+        // Si el usuario está autenticado, guardar en BD
+        if (req.usuario?.user_id) {
+            await supabase
+                .from('chat_historial')
+                .insert({
+                    usuario_id: req.usuario.user_id,
+                    mensaje: mensaje,
+                    respuesta: respuestaIA
+                });
+        }
+
         res.json({ respuesta: respuestaIA });
 
     } catch (error) {
@@ -102,6 +133,52 @@ app.post('/api/chatbot', async (req, res) => {
         res.status(500).json({ 
             respuesta: 'Lo siento, no pude consultar nuestro catálogo en este momento. Inténtalo de nuevo.' 
         });
+    }
+});
+
+// GET /api/chatbot/historial - Obtener historial del usuario autenticado
+app.get('/api/chatbot/historial', verificarTokenChatbot, async (req, res) => {
+    if (!req.usuario?.user_id) {
+        return res.json([]); // sin sesión, historial vacío
+    }
+
+    try {
+        const { data, error } = await supabase
+            .from('chat_historial')
+            .select('mensaje, respuesta, fecha')
+            .eq('usuario_id', req.usuario.user_id)
+            .order('fecha', { ascending: true })
+            .limit(100);
+
+        if (error) throw error;
+
+        res.json(data || []);
+
+    } catch (error) {
+        console.error('Error al obtener historial:', error);
+        res.status(500).json({ error: 'Error al obtener historial' });
+    }
+});
+
+// DELETE /api/chatbot/historial - Borrar historial del usuario
+app.delete('/api/chatbot/historial', verificarTokenChatbot, async (req, res) => {
+    if (!req.usuario?.user_id) {
+        return res.status(401).json({ error: 'No autenticado' });
+    }
+
+    try {
+        const { error } = await supabase
+            .from('chat_historial')
+            .delete()
+            .eq('usuario_id', req.usuario.user_id);
+
+        if (error) throw error;
+
+        res.json({ mensaje: 'Historial eliminado' });
+
+    } catch (error) {
+        console.error('Error al eliminar historial:', error);
+        res.status(500).json({ error: 'Error al eliminar historial' });
     }
 });
 
