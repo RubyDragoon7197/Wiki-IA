@@ -221,17 +221,17 @@
             }
             tbody.innerHTML = ias.map(ia => `
                 <tr>
-                    <td>
+                    <td data-label="IA">
                         <div class="ia-cell">
                             <strong>${ia.nombre}</strong>
                             <a href="${ia.url}" target="_blank" class="ia-url-small">🔗 Ver sitio</a>
                         </div>
                     </td>
-                    <td><span class="category-tag">${ia.categorias?.nombre || 'Sin categoría'}</span></td>
-                    <td>${ia.usuarios?.username || 'Desconocido'}</td>
-                    <td><span class="status-badge status-${ia.estado}">${ia.estado}</span></td>
-                    <td>${formatearFecha(ia.fecha_publicacion)}</td>
-                    <td>
+                    <td data-label="Categoría"><span class="category-tag">${ia.categorias?.nombre || 'Sin categoría'}</span></td>
+                    <td data-label="Usuario">${ia.usuarios?.username || 'Desconocido'}</td>
+                    <td data-label="Estado"><span class="status-badge status-${ia.estado}">${ia.estado}</span></td>
+                    <td data-label="Fecha">${formatearFecha(ia.fecha_publicacion)}</td>
+                    <td data-label="Acciones">
                         <div class="action-buttons">
                             ${ia.estado === 'pendiente' ? `
                                 <button class="btn-small btn-success" onclick="approveIA(${ia.ia_id})" title="Aprobar">✓</button>
