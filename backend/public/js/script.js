@@ -279,7 +279,7 @@ class Pagination {
                     <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
                 </div>
                 <div class="ai-stats">
-                    <span>🎯 ${this.formatearNumero(ia.total_usos)} usos</span>
+                    <span>${this.formatearNumero(ia.total_usos)} usos</span>
                     <span>📅 ${fecha.toLocaleDateString('es', {month: 'short', year: 'numeric'})}</span>
                 </div>
             </div>

@@ -91,7 +91,7 @@ function crearTarjetaFavorito(ia) {
             <h3 class="ai-name">${ia.nombre}</h3>
             <p class="ai-description">${truncarTexto(ia.descripcion, 80)}</p>
             <div class="ai-stats">
-                <span>🎯 ${formatearNumero(ia.total_usos)} usos</span>
+                <span>${formatearNumero(ia.total_usos)} usos</span>
             </div>
         </div>
         <div class="ai-card-actions-fav">

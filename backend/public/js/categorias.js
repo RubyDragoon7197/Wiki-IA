@@ -131,7 +131,7 @@ function crearTarjetaIA(ia) {
                 <span class="ai-category">${ia.categorias?.icono || '📁'} ${ia.categorias?.nombre || 'General'}</span>
             </div>
             <div class="ai-stats">
-                <span>🎯 ${formatearNumero(ia.total_usos)} usos</span>
+                <span>${formatearNumero(ia.total_usos)} usos</span>
                 <span>📅 ${formatearFechaMes(ia.fecha_publicacion)}</span>
             </div>
         </div>
